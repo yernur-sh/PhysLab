@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "597398349978",
+    "project_id": "physlab-5b613",
+    "storage_bucket": "physlab-5b613.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597398349978:android:38ca3c86337f9d240fd723",
+        "android_client_info": {
+          "package_name": "app.vercel.khanmedia.physlab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597398349978-gbgv7cblf1d7q7n7fhc1gv5bm1g4dn4b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxVDcXpvnEgTfKD4U15eVNdQzNrqUxLXo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "597398349978-gbgv7cblf1d7q7n7fhc1gv5bm1g4dn4b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
