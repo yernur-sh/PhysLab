@@ -7,7 +7,7 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(430, 900));
     await tester.pumpWidget(const PhysLabApp());
 
-    expect(find.text('PhysLabv'), findsOneWidget);
+    expect(find.text('PhysLab'), findsOneWidget);
     expect(find.text('Физиканы сезініп үйрен'), findsOneWidget);
 
     await tester.tap(find.text('Өткізу'));

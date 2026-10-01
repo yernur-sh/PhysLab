@@ -41,6 +41,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   ];
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final current = pages[page];
     return Scaffold(
@@ -54,10 +60,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   const BrandMark(size: 42),
                   const SizedBox(width: 12),
                   const Text(
-                    'PhysLabv',
+                    'PhysLab',
                     style: TextStyle(
                       fontSize: 23,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -.5,
                       color: navy,
                     ),
                   ),
@@ -79,22 +86,67 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           TweenAnimationBuilder<double>(
-                            tween: Tween(begin: .86, end: 1),
-                            duration: const Duration(milliseconds: 650),
-                            curve: Curves.easeOutBack,
+                            tween: Tween(begin: .94, end: 1),
+                            duration: Duration(
+                              milliseconds:
+                                  MediaQuery.disableAnimationsOf(context)
+                                  ? 0
+                                  : 450,
+                            ),
+                            curve: Curves.easeOutCubic,
                             builder: (context, value, child) =>
                                 Transform.scale(scale: value, child: child),
                             child: Container(
-                              width: 230,
-                              height: 230,
+                              width: 250,
+                              height: 250,
                               decoration: BoxDecoration(
-                                color: item.color.withValues(alpha: .12),
-                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    item.color.withValues(alpha: .9),
+                                    navy,
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(60),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: item.color.withValues(alpha: .23),
+                                    blurRadius: 40,
+                                    offset: const Offset(0, 20),
+                                  ),
+                                ],
                               ),
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
-                                  Icon(item.icon, size: 105, color: item.color),
+                                  Container(
+                                    width: 184,
+                                    height: 184,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white.withValues(
+                                          alpha: .26,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 132,
+                                    height: 132,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white.withValues(
+                                        alpha: .12,
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    item.icon,
+                                    size: 90,
+                                    color: Colors.white,
+                                  ),
                                   const Positioned(
                                     left: 22,
                                     top: 32,
@@ -109,7 +161,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     bottom: 35,
                                     child: Icon(
                                       Icons.bubble_chart_rounded,
-                                      color: item.color,
+                                      color: Colors.white70,
                                       size: 34,
                                     ),
                                   ),
@@ -117,14 +169,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 50),
+                          const SizedBox(height: 48),
                           Text(
                             item.title,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontSize: 31,
                               height: 1.15,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -.8,
                               color: navy,
                             ),
                           ),
@@ -149,7 +202,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 children: List.generate(
                   pages.length,
                   (index) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
+                    duration: Duration(
+                      milliseconds: MediaQuery.disableAnimationsOf(context)
+                          ? 0
+                          : 250,
+                    ),
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     width: page == index ? 28 : 8,
                     height: 8,
@@ -170,7 +227,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     _openAuth();
                   } else {
                     controller.nextPage(
-                      duration: const Duration(milliseconds: 380),
+                      duration: Duration(
+                        milliseconds: MediaQuery.disableAnimationsOf(context)
+                            ? 0
+                            : 300,
+                      ),
                       curve: Curves.easeOutCubic,
                     );
                   }
@@ -235,7 +296,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     BrandMark(size: 44),
                     SizedBox(width: 12),
                     Text(
-                      'PhysLabv',
+                      'PhysLab',
                       style: TextStyle(
                         fontSize: 23,
                         fontWeight: FontWeight.w800,
@@ -244,13 +305,34 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 36),
+                const SizedBox(height: 27),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 11,
+                    vertical: 7,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE8EDFF),
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: const Text(
+                    'СЕНІҢ ФИЗИКА ЗЕРТХАНАҢ',
+                    style: TextStyle(
+                      color: primary,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.3,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
                 Text(
                   isLogin ? 'Қайта оралғаныңа қуаныштымыз!' : 'Аккаунт құру',
                   style: const TextStyle(
                     fontSize: 30,
                     height: 1.15,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -.8,
                     color: navy,
                   ),
                 ),
@@ -258,36 +340,19 @@ class _AuthScreenState extends State<AuthScreen> {
                 Text(
                   isLogin
                       ? 'Оқуды жалғастыру үшін жүйеге кір.'
-                      : 'Өзіңе сәйкес рөлді таңдап, PhysLabv-ке қосыл.',
+                      : 'Өзіңе сәйкес рөлді таңдап, PhysLab-қа қосыл.',
                   style: const TextStyle(
                     color: Color(0xFF747B90),
                     fontSize: 16,
                   ),
                 ),
                 const SizedBox(height: 26),
-                SegmentedButton<UserRole>(
-                  segments: const [
-                    ButtonSegment(
-                      value: UserRole.student,
-                      label: Text('Оқушы'),
-                      icon: Icon(Icons.school_rounded),
-                    ),
-                    ButtonSegment(
-                      value: UserRole.teacher,
-                      label: Text('Мұғалім'),
-                      icon: Icon(Icons.cast_for_education_rounded),
-                    ),
-                  ],
-                  selected: {role},
-                  onSelectionChanged: (value) =>
-                      setState(() => role = value.first),
-                  style: ButtonStyle(
-                    visualDensity: VisualDensity.comfortable,
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
+                IosSegmentedControl(
+                  labels: const ['Оқушы', 'Мұғалім'],
+                  selectedIndex: role == UserRole.student ? 0 : 1,
+                  onChanged: (value) => setState(
+                    () =>
+                        role = value == 0 ? UserRole.student : UserRole.teacher,
                   ),
                 ),
                 const SizedBox(height: 20),

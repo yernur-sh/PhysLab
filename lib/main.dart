@@ -32,13 +32,55 @@ class _PhysLabAppState extends State<PhysLabApp> {
     return AppStateScope(
       notifier: appState,
       child: MaterialApp(
-        title: 'PhysLabv',
+        title: 'PhysLab',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5267F7)),
-          scaffoldBackgroundColor: const Color(0xFFF7F8FD),
-          fontFamily: 'SF Pro Display',
+          colorScheme: ColorScheme.fromSeed(seedColor: primary),
+          scaffoldBackgroundColor: canvas,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: canvas,
+            foregroundColor: navy,
+            surfaceTintColor: Colors.transparent,
+            centerTitle: false,
+            titleTextStyle: TextStyle(
+              color: navy,
+              fontSize: 21,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -.4,
+            ),
+          ),
+          pageTransitionsTheme: const PageTransitionsTheme(
+            builders: {
+              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+            },
+          ),
+          bottomSheetTheme: const BottomSheetThemeData(
+            backgroundColor: canvas,
+            surfaceTintColor: Colors.transparent,
+            showDragHandle: true,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            ),
+          ),
+          filledButtonTheme: FilledButtonThemeData(
+            style: FilledButton.styleFrom(
+              backgroundColor: primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(17),
+              ),
+            ),
+          ),
+          chipTheme: ChipThemeData(
+            backgroundColor: Colors.white,
+            selectedColor: primary.withValues(alpha: .12),
+            side: BorderSide.none,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
             fillColor: Colors.white,
@@ -47,19 +89,16 @@ class _PhysLabAppState extends State<PhysLabApp> {
               vertical: 17,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(17),
               borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(18),
-              borderSide: const BorderSide(color: Color(0xFFE8EAF4)),
+              borderRadius: BorderRadius.circular(17),
+              borderSide: const BorderSide(color: Color(0xFFE6EAF2)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(18),
-              borderSide: const BorderSide(
-                color: Color(0xFF5267F7),
-                width: 1.5,
-              ),
+              borderRadius: BorderRadius.circular(17),
+              borderSide: const BorderSide(color: primary, width: 1.5),
             ),
           ),
         ),
