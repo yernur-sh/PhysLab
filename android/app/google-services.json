@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "597398349978-1kd7r7krrsunrajpp642c9mn9p3f1l8h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.vercel.khanmedia.physlab",
+            "certificate_hash": "69c0a58d688b653285a596274485fa560b3f6e9d"
+          }
+        },
+        {
           "client_id": "597398349978-gbgv7cblf1d7q7n7fhc1gv5bm1g4dn4b.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "597398349978-gbgv7cblf1d7q7n7fhc1gv5bm1g4dn4b.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "597398349978-skhu3qvg6l6knnt20ingpgm5lf8k9vvt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.vercel.khanmedia.physlab"
+              }
             }
           ]
         }
