@@ -26,29 +26,6 @@ bool projectileHits({
       (projectileHeightAt(distance, speed, angle) - height).abs() <= tolerance;
 }
 
-enum CircuitPart { battery, switchPart, resistor, lamp }
-
-enum CircuitState { incomplete, openSwitch, tooDim, lit, overload }
-
-CircuitState evaluateCircuit({
-  required List<CircuitPart?> parts,
-  required bool switchClosed,
-  required double voltage,
-  required double resistance,
-}) {
-  if (parts.length != CircuitPart.values.length ||
-      parts.toSet().length != CircuitPart.values.length ||
-      parts.any((part) => part == null)) {
-    return CircuitState.incomplete;
-  }
-  if (!switchClosed) return CircuitState.openSwitch;
-  // The bulb has 4 Ω of resistance. Parts are connected in series.
-  final current = voltage / (resistance + 4);
-  if (current > 1.2) return CircuitState.overload;
-  if (current < .35) return CircuitState.tooDim;
-  return CircuitState.lit;
-}
-
 double lensImageDistance(double objectDistance, double focalLength) {
   if (objectDistance <= focalLength) return double.infinity;
   return objectDistance * focalLength / (objectDistance - focalLength);

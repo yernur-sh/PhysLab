@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:physlab/physics_game_models.dart';
 import 'package:physlab/screens/physics_games.dart';
+import 'package:physlab/screens/main_shell.dart';
 
 void main() {
   test('projectile trajectory and hit test follow kinematics', () {
@@ -14,55 +15,6 @@ void main() {
     expect(
       projectileHits(distance: 50, height: 10, speed: 20, angle: 45),
       isFalse,
-    );
-  });
-
-  test('series circuit requires all components and safe current', () {
-    const parts = CircuitPart.values;
-    expect(
-      evaluateCircuit(
-        parts: [null, ...parts.skip(1)],
-        switchClosed: true,
-        voltage: 9,
-        resistance: 5,
-      ),
-      CircuitState.incomplete,
-    );
-    expect(
-      evaluateCircuit(
-        parts: parts,
-        switchClosed: false,
-        voltage: 9,
-        resistance: 5,
-      ),
-      CircuitState.openSwitch,
-    );
-    expect(
-      evaluateCircuit(
-        parts: parts,
-        switchClosed: true,
-        voltage: 9,
-        resistance: 5,
-      ),
-      CircuitState.lit,
-    );
-    expect(
-      evaluateCircuit(
-        parts: parts,
-        switchClosed: true,
-        voltage: 15,
-        resistance: 1,
-      ),
-      CircuitState.overload,
-    );
-    expect(
-      evaluateCircuit(
-        parts: parts,
-        switchClosed: true,
-        voltage: 3,
-        resistance: 20,
-      ),
-      CircuitState.tooDim,
     );
   });
 
@@ -80,10 +32,8 @@ void main() {
 
   for (final game in <(Widget, String)>[
     (const BallisticsGame(), 'Баллистика шебері'),
-    (const CircuitGame(), 'Электрлік лабиринт'),
     (const OpticsGame(), 'Оптикалық фокус'),
     (const EnergyGame(), 'Энергия трансформері'),
-    (const FormulaRaceGame(), 'Жылдам формула'),
   ]) {
     testWidgets('${game.$2} screen opens', (tester) async {
       await tester.binding.setSurfaceSize(const Size(430, 900));
@@ -93,15 +43,34 @@ void main() {
     });
   }
 
-  testWidgets('race answers move the player', (tester) async {
+  testWidgets('ballistics target can be placed repeatedly without stages', (
+    tester,
+  ) async {
     await tester.binding.setSurfaceSize(const Size(430, 900));
-    await tester.pumpWidget(const MaterialApp(home: FormulaRaceGame()));
-    await tester.tap(find.text('Жарысты бастау'));
+    await tester.pumpWidget(const MaterialApp(home: BallisticsGame()));
+    expect(find.textContaining('КЕЗЕҢ'), findsNothing);
+    final area = find.byKey(const Key('ballistics-target-area'));
+    await tester.tapAt(tester.getTopLeft(area) + const Offset(90, 80));
     await tester.pump();
-    expect(find.text('120 м жолды 10 с-та жүрді. Жылдамдық?'), findsOneWidget);
-    await tester.tap(find.text('12 м/с'));
+    final firstTarget = tester.widget<Text>(find.textContaining('x = ')).data;
+    await tester.tapAt(tester.getTopLeft(area) + const Offset(160, 100));
     await tester.pump();
-    expect(find.text('m = 2 кг, a = 3 м/с². Күш?'), findsOneWidget);
-    expect(find.textContaining('Дұрыс!'), findsOneWidget);
+    final secondTarget = tester.widget<Text>(find.textContaining('x = ')).data;
+    expect(secondTarget, isNot(firstTarget));
   });
+
+  for (final game in <Widget>[const FormulaBuilderGame(), const MatchGame()]) {
+    testWidgets('${game.runtimeType} stays usable with Montserrat', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(fontFamily: 'Montserrat'),
+          home: game,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

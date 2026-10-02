@@ -1,16 +1,25 @@
-# physlab
+# PhysLab
 
-A new Flutter project.
+Flutter арқылы жасалған мектеп физикасы қосымшасы. Тақырыптар, формулалар, викториналар, шексіз қайталанатын ойындар және оқушы–мұғалім кластары бар.
 
-## Getting Started
+## Іске қосу
 
-This project is a starting point for a Flutter application.
+```sh
+flutter pub get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+Firebase жобасында Email/Password және Google Authentication провайдерлерін, сондай-ақ Cloud Firestore қызметін қосу керек. Android үшін Google OAuth SHA-1/SHA-256 қолтаңбаларын, iOS үшін URL scheme баптауын Firebase құжаттамасына сай тексеріңіз. Жобадағы `firebase_options.dart` пен платформалық конфигурация файлдары нақты Firebase жобаңызға сәйкес болуы тиіс.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+`firestore.rules` класс, жазба, пікір және оқу нәтижелерінің құқықтарын сипаттайды. Оларды Firebase жобасына бөлек жариялау керек; бұл репозиторийдегі файлдың өзі сервер ережесін өзгертпейді. Жарияламайынша пікір жіберу, өзгерту/өшіру және нәтижелерді сақтау жұмыс істемеуі мүмкін.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Тақырыпты меңгеру үшін 5 сұрақтың кемінде 4-іне дұрыс жауап беру қажет (80%). Практикада 10 тест бар, әрқайсында 15 сұрақ. Ең жақсы нәтижеден асқан әр дұрыс жауапқа 10 ұпай қосылады; 15/15 нәтижесі профильде толық аяқталған тест ретінде саналады.
+
+**Маңызды қауіпсіздік шегі:** мұғалім коды (`pslm`) қазір клиент жағында тексеріледі. Оны қосымша ішінен көруге болатындықтан, бұл өндірістік деңгейдегі қорғаныс емес. Нақты пайдаланушыларға ашар алдында мұғалім мәртебесін серверде бекітілген тізім, әкімші растауы немесе сенімді backend арқылы тексеріңіз және Firestore ережелерін соған сүйендіріңіз.
+
+## Тексеру
+
+```sh
+flutter analyze
+flutter test
+```

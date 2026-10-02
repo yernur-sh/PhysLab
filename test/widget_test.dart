@@ -41,5 +41,80 @@ void main() {
       find.byKey(const Key('google-auth-button')),
     );
     expect(enabledGoogleButton.onPressed, isNotNull);
+    expect(find.text('СЕНІҢ ФИЗИКА ЗЕРТХАНАҢ'), findsNothing);
+  });
+
+  testWidgets('student Google registration needs no typed name', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(430, 900));
+    await tester.pumpWidget(const PhysLabApp());
+    await tester.tap(find.text('Өткізу'));
+    await tester.pumpAndSettle();
+
+    expect(find.widgetWithText(TextFormField, 'Аты-жөні'), findsOneWidget);
+    expect(
+      tester
+          .widget<OutlinedButton>(find.byKey(const Key('google-auth-button')))
+          .onPressed,
+      isNotNull,
+    );
+  });
+
+  testWidgets('login needs no role or teacher code and allows Google', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(430, 900));
+    await tester.pumpWidget(const PhysLabApp());
+    await tester.tap(find.text('Өткізу'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Мұғалім'));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('auth-mode-toggle')));
+    await tester.pump();
+
+    expect(find.text('Оқушы'), findsNothing);
+    expect(find.text('Мұғалім'), findsNothing);
+    expect(find.byKey(const Key('teacher-secret-field')), findsNothing);
+    expect(
+      tester
+          .widget<OutlinedButton>(find.byKey(const Key('google-auth-button')))
+          .onPressed,
+      isNotNull,
+    );
+  });
+
+  testWidgets('Google button uses official image and app uses Montserrat', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(430, 900));
+    await tester.pumpWidget(const PhysLabApp());
+    final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.theme?.textTheme.bodyMedium?.fontFamily, 'Montserrat');
+    await tester.tap(find.text('Өткізу'));
+    await tester.pumpAndSettle();
+    final icon = tester.widget<Image>(
+      find.byKey(const Key('google-brand-icon')),
+    );
+    expect(
+      (icon.image as AssetImage).assetName,
+      'assets/branding/google_g.png',
+    );
+  });
+
+  testWidgets('onboarding introduces the scientific project mentor', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(360, 640));
+    await tester.pumpWidget(const PhysLabApp());
+
+    for (var index = 0; index < 3; index++) {
+      await tester.tap(find.text('Жалғастыру'));
+      await tester.pumpAndSettle();
+    }
+
+    expect(find.text('ЖОБАНЫҢ ҒЫЛЫМИ ЖЕТЕКШІСІ'), findsOneWidget);
+    expect(find.text('Жұмабаева Қарашаш\nБұхарбекқызы'), findsOneWidget);
+    expect(find.text('Физика пәні мұғалімі'), findsOneWidget);
+    expect(find.byKey(const Key('project-mentor-photo')), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

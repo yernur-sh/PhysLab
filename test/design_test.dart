@@ -6,6 +6,37 @@ import 'package:physlab/screens/main_shell.dart';
 import 'package:physlab/widgets/common.dart';
 
 void main() {
+  testWidgets('profile uses Google photo and email default avatar', (
+    tester,
+  ) async {
+    const google = UserProfile(
+      name: 'Google Оқушы',
+      email: 'google@example.com',
+      role: UserRole.student,
+      isGoogleUser: true,
+      photoUrl: 'https://example.com/avatar.png',
+    );
+    const email = UserProfile(
+      name: 'Email Оқушы',
+      email: 'email@example.com',
+      role: UserRole.student,
+    );
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: Column(
+            children: [
+              UserAvatar(profile: google, radius: 20),
+              UserAvatar(profile: email, radius: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+    expect(find.byKey(const Key('google-profile-photo')), findsOneWidget);
+    expect(find.byKey(const Key('default-profile-avatar')), findsOneWidget);
+  });
+
   testWidgets('home layout stays within a phone viewport', (tester) async {
     await tester.binding.setSurfaceSize(const Size(430, 900));
     final state = AppState()
@@ -28,11 +59,12 @@ void main() {
     expect(find.text('Зертхана'), findsOneWidget);
     expect(find.byKey(const Key('profile-button')), findsOneWidget);
 
-    await tester.tap(find.text('Тақырып'));
+    await tester.tap(find.text('Тақырып').last);
     await tester.pumpAndSettle();
+    expect(physicsTopics.length, greaterThan(20));
     expect(
-      physicsTopics.map((topic) => topic.grade),
-      orderedEquals([7, 7, 8, 8, 9, 9, 10, 10, 11, 11]),
+      physicsTopics.map((topic) => topic.grade).toList(),
+      orderedEquals(physicsTopics.map((topic) => topic.grade).toList()..sort()),
     );
     expect(
       tester.getTopLeft(find.byType(IosSegmentedControl)).dy,
@@ -76,13 +108,16 @@ void main() {
       greaterThanOrEqualTo(44),
     );
 
-    await tester.tap(find.text('Тақырып'));
+    await tester.tap(find.text('Тақырып').last);
     await tester.pumpAndSettle();
     expect(
       tester.getTopLeft(find.byType(IosSegmentedControl)).dy,
       lessThan(230),
     );
-    expect(find.text('7–11 сынып тақырыптары оқу ретімен'), findsOneWidget);
+    expect(
+      find.text('Мектеп физикасының тақырыптары оқу ретімен'),
+      findsOneWidget,
+    );
     expect(find.text('Механикалық қозғалыс'), findsOneWidget);
     await tester.tap(find.text('Механикалық қозғалыс'));
     await tester.pumpAndSettle();
@@ -109,5 +144,81 @@ void main() {
     expect(find.text('Формула қалай шығады?'), findsOneWidget);
     expect(find.text('Таңбалар мен өлшемдер'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('teacher can start another class after creating one', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(430, 900));
+    final state = AppState()
+      ..signIn(
+        const UserProfile(
+          name: 'Мұғалім',
+          email: 'teacher@example.com',
+          role: UserRole.teacher,
+        ),
+      );
+    state.classes.add(
+      const PhysicsClass(name: 'Физика клубы', code: 'PHY-ABC234', grade: 8),
+    );
+    await tester.pumpWidget(
+      AppStateScope(
+        notifier: state,
+        child: const MaterialApp(home: MainShell()),
+      ),
+    );
+    expect(find.byKey(const Key('create-another-class')), findsOneWidget);
+    expect(find.text('Физика клубы'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    state.dispose();
+  });
+
+  testWidgets('profile and quiz result show progress on a small phone', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(360, 640));
+    final state = AppState()
+      ..signIn(
+        const UserProfile(
+          name: 'Айдана',
+          email: 'aidana@example.com',
+          role: UserRole.student,
+        ),
+      );
+    await state.saveQuizResult(0, 15);
+    await state.saveTopicResult(physicsTopics.first.title, 4);
+    await tester.pumpWidget(
+      AppStateScope(
+        notifier: state,
+        child: const MaterialApp(home: ProfileScreen()),
+      ),
+    );
+    expect(find.text('150'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Меңгерілген тақырыптар'),
+      150,
+      scrollable: find.byType(Scrollable).last,
+    );
+    expect(find.text('Меңгерілген тақырыптар'), findsOneWidget);
+    expect(find.text(physicsTopics.first.title), findsNothing);
+    await tester.tap(find.text('Меңгерілген тақырыптар'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MasteredTopicsScreen), findsOneWidget);
+    expect(find.text(physicsTopics.first.title), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tester.pumpWidget(
+      AppStateScope(
+        notifier: state,
+        child: const MaterialApp(
+          home: QuizResultScreen(quizIndex: 0, correct: 15, earnedPoints: 150),
+        ),
+      ),
+    );
+    expect(find.text('Керемет нәтиже!'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    state.dispose();
   });
 }

@@ -36,6 +36,7 @@ class _PhysLabAppState extends State<PhysLabApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
+          fontFamily: 'Montserrat',
           colorScheme: ColorScheme.fromSeed(seedColor: primary),
           scaffoldBackgroundColor: canvas,
           appBarTheme: const AppBarTheme(
@@ -44,6 +45,7 @@ class _PhysLabAppState extends State<PhysLabApp> {
             surfaceTintColor: Colors.transparent,
             centerTitle: false,
             titleTextStyle: TextStyle(
+              fontFamily: 'Montserrat',
               color: navy,
               fontSize: 21,
               fontWeight: FontWeight.w800,

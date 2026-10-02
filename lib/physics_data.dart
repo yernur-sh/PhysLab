@@ -1,3 +1,6 @@
+part 'physics_data_extra.dart';
+part 'physics_quiz_data.dart';
+
 class TopicData {
   const TopicData({
     required this.grade,
@@ -32,7 +35,7 @@ class TopicData {
   final String formulaAnswer;
 }
 
-const physicsTopics = <TopicData>[
+const corePhysicsTopics = <TopicData>[
   TopicData(
     grade: 7,
     title: 'Механикалық қозғалыс',
@@ -403,6 +406,13 @@ const physicsTopics = <TopicData>[
   ),
 ];
 
+final physicsTopics = <TopicData>[
+  for (var grade = 7; grade <= 11; grade++) ...[
+    ...corePhysicsTopics.where((topic) => topic.grade == grade),
+    ...extraPhysicsTopics.where((topic) => topic.grade == grade),
+  ],
+];
+
 class QuizQuestion {
   const QuizQuestion(this.question, this.answers, this.correct);
   final String question;
@@ -410,35 +420,53 @@ class QuizQuestion {
   final int correct;
 }
 
-const quizQuestions = <QuizQuestion>[
-  QuizQuestion('Күштің SI жүйесіндегі өлшем бірлігі?', [
-    'Паскаль',
-    'Ньютон',
-    'Джоуль',
-    'Ватт',
-  ], 1),
-  QuizQuestion('Жылдамдықтың формуласы қайсы?', [
-    'v = s/t',
-    'v = st',
-    'v = t/s',
-    'v = ma',
-  ], 0),
-  QuizQuestion('Энергияның өлшем бірлігі?', [
-    'Вольт',
-    'Ампер',
-    'Джоуль',
-    'Ом',
-  ], 2),
-  QuizQuestion('Дененің инерттілігін сипаттайтын шама?', [
-    'Көлем',
-    'Тығыздық',
-    'Масса',
-    'Қысым',
-  ], 2),
-  QuizQuestion('Ток күшін өлшейтін құрал?', [
-    'Вольтметр',
-    'Амперметр',
-    'Барометр',
-    'Динамометр',
-  ], 1),
-];
+class QuizSet {
+  const QuizSet(this.title, this.questions);
+  final String title;
+  final List<QuizQuestion> questions;
+}
+
+List<QuizQuestion> topicCheckQuestions(TopicData topic) {
+  final index = physicsTopics.indexOf(topic);
+  if (index < 0) throw ArgumentError('Тақырып табылмады');
+
+  QuizQuestion make(
+    String prompt,
+    String Function(TopicData) answerOf,
+    int answerPosition,
+  ) {
+    String clean(String answer) => answer.replaceFirst(
+      RegExp(r'^\s*Жауабы:\s*', caseSensitive: false),
+      '',
+    );
+
+    final correct = clean(answerOf(topic));
+    final distractors = <String>[];
+    for (
+      var offset = 1;
+      offset < physicsTopics.length && distractors.length < 3;
+      offset++
+    ) {
+      final candidate = clean(
+        answerOf(physicsTopics[(index + offset) % physicsTopics.length]),
+      );
+      if (candidate != correct && !distractors.contains(candidate)) {
+        distractors.add(candidate);
+      }
+    }
+    final answers = [...distractors]..insert(answerPosition, correct);
+    return QuizQuestion(prompt, answers, answerPosition);
+  }
+
+  return [
+    make('${topic.title}: дұрыс формуланы таңда.', (item) => item.formula, 1),
+    make('${topic.title} нені сипаттайды?', (item) => item.subtitle, 2),
+    make(topic.topicQuestion, (item) => item.topicAnswer, 0),
+    make(topic.formulaQuestion, (item) => item.formulaAnswer, 3),
+    make(
+      '${topic.title} туралы дұрыс тұжырымды тап.',
+      (item) => item.keyIdeas.first,
+      1,
+    ),
+  ];
+}
