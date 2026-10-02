@@ -81,10 +81,19 @@ class _QuizList extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(
-              Icons.play_circle_fill_rounded,
-              color: primary,
-              size: 34,
+            Container(
+              key: const Key('quiz-start-affordance'),
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE9EDFF),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              child: const Icon(
+                Icons.arrow_forward_rounded,
+                color: primary,
+                size: 22,
+              ),
             ),
           ],
         ),

@@ -6,6 +6,26 @@ import 'package:physlab/screens/main_shell.dart';
 import 'package:physlab/widgets/common.dart';
 
 void main() {
+  testWidgets('quiz cards use an arrow instead of a play icon', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(430, 900));
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: PracticePage())),
+    );
+    expect(find.byKey(const Key('quiz-start-affordance')), findsWidgets);
+    expect(find.byIcon(Icons.play_circle_fill_rounded), findsNothing);
+    expect(find.byIcon(Icons.arrow_forward_rounded), findsWidgets);
+  });
+
+  testWidgets('PhysAI opens without the redundant greeting banner', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: Scaffold(body: AssistantPage())),
+    );
+    expect(find.text('Сәлем, мен PhysAI'), findsNothing);
+    expect(find.textContaining('Сәлем! Мен PhysAI көмекшісімін'), findsOneWidget);
+  });
+
   testWidgets('profile uses Google photo and email default avatar', (
     tester,
   ) async {

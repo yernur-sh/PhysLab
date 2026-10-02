@@ -9,6 +9,13 @@ void main() {
 
     expect(find.text('PhysLab'), findsOneWidget);
     expect(find.text('Физиканы сезініп үйрен'), findsOneWidget);
+    final mark = tester.widget<Image>(
+      find.byKey(const Key('physlab-inner-icon')),
+    );
+    expect(
+      (mark.image as AssetImage).assetName,
+      'assets/branding/physlab_icon.png',
+    );
 
     await tester.tap(find.text('Өткізу'));
     await tester.pumpAndSettle();
@@ -115,6 +122,10 @@ void main() {
     expect(find.text('Жұмабаева Қарашаш\nБұхарбекқызы'), findsOneWidget);
     expect(find.text('Физика пәні мұғалімі'), findsOneWidget);
     expect(find.byKey(const Key('project-mentor-photo')), findsOneWidget);
+    final mentorPhoto = tester.widget<Image>(
+      find.byKey(const Key('project-mentor-photo')),
+    );
+    expect(mentorPhoto.fit, BoxFit.cover);
     expect(tester.takeException(), isNull);
   });
 }

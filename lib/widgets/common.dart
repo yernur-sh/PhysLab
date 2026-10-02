@@ -9,41 +9,14 @@ class BrandMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF6177FF), Color(0xFF354BDC)],
-        ),
-        borderRadius: BorderRadius.circular(size * .32),
-        boxShadow: [
-          BoxShadow(
-            color: primary.withValues(alpha: .28),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Icon(Icons.blur_on_rounded, color: Colors.white, size: size * .67),
-          Positioned(
-            top: size * .18,
-            right: size * .15,
-            child: Container(
-              width: size * .11,
-              height: size * .11,
-              decoration: const BoxDecoration(
-                color: sunny,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-        ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size * .25),
+      child: Image.asset(
+        'assets/branding/physlab_icon.png',
+        key: const Key('physlab-inner-icon'),
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
       ),
     );
   }

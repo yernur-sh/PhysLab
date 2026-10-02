@@ -330,19 +330,7 @@ class AppState extends ChangeNotifier {
     await FirebaseFirestore.instance.collection('classes').doc(code).update({
       'name': trimmed,
     });
-    // The class stream may replace the list while Firestore is awaiting the write.
-    final latestIndex = classes.indexWhere((item) => item.code == code);
-    if (latestIndex >= 0) {
-      final latest = classes[latestIndex];
-      classes[latestIndex] = PhysicsClass(
-        name: trimmed,
-        code: latest.code,
-        grade: latest.grade,
-        memberCount: latest.memberCount,
-        teacherUid: latest.teacherUid,
-      );
-      notifyListeners();
-    }
+    // The active class snapshot updates the shared list; no second notify is needed.
   }
 
   Future<void> deleteClass(String code) async {
@@ -404,6 +392,13 @@ class AppStateScope extends InheritedNotifier<AppState> {
     final scope = context.dependOnInheritedWidgetOfExactType<AppStateScope>();
     assert(scope != null, 'AppStateScope not found');
     return scope!.notifier!;
+  }
+
+  static AppState read(BuildContext context) {
+    final element = context
+        .getElementForInheritedWidgetOfExactType<AppStateScope>();
+    assert(element != null, 'AppStateScope not found');
+    return (element!.widget as AppStateScope).notifier!;
   }
 }
 

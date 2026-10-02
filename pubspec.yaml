@@ -62,6 +62,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/branding/google_g.png
+    - assets/branding/physlab_icon.png
     - assets/people/qarashash_zhumabayeva.jpeg
   fonts:
     - family: Montserrat

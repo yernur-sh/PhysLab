@@ -183,31 +183,11 @@ class _ClassroomScreenState extends State<ClassroomScreen>
   }
 
   Future<void> _renameClass() async {
-    final controller = TextEditingController(text: className);
+    final appState = AppStateScope.read(context);
     final name = await showDialog<String>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Класс атын өзгерту'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          maxLength: 80,
-          decoration: const InputDecoration(labelText: 'Класс атауы'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Болдырмау'),
-          ),
-          FilledButton(
-            onPressed: () =>
-                Navigator.of(dialogContext).pop(controller.text.trim()),
-            child: const Text('Сақтау'),
-          ),
-        ],
-      ),
+      builder: (_) => _RenameClassDialog(initialName: className),
     );
-    controller.dispose();
     if (!mounted || name == null) return;
     if (name.isEmpty) {
       showMessage(context, 'Класс атауын енгізіңіз', error: true);
@@ -216,9 +196,7 @@ class _ClassroomScreenState extends State<ClassroomScreen>
     if (name == className) return;
     setState(() => managingClass = true);
     try {
-      await AppStateScope.of(
-        context,
-      ).renameClass(widget.physicsClass.code, name);
+      await appState.renameClass(widget.physicsClass.code, name);
       if (mounted) {
         setState(() => className = name);
         showMessage(context, 'Класс атауы өзгертілді');
@@ -233,6 +211,7 @@ class _ClassroomScreenState extends State<ClassroomScreen>
   }
 
   Future<void> _deleteClass() async {
+    final appState = AppStateScope.read(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -256,7 +235,7 @@ class _ClassroomScreenState extends State<ClassroomScreen>
     if (confirmed != true || !mounted) return;
     setState(() => managingClass = true);
     try {
-      await AppStateScope.of(context).deleteClass(widget.physicsClass.code);
+      await appState.deleteClass(widget.physicsClass.code);
       if (mounted) Navigator.of(context).pop();
     } catch (error) {
       if (mounted) {
@@ -270,6 +249,45 @@ class _ClassroomScreenState extends State<ClassroomScreen>
       if (mounted) setState(() => managingClass = false);
     }
   }
+}
+
+class _RenameClassDialog extends StatefulWidget {
+  const _RenameClassDialog({required this.initialName});
+  final String initialName;
+
+  @override
+  State<_RenameClassDialog> createState() => _RenameClassDialogState();
+}
+
+class _RenameClassDialogState extends State<_RenameClassDialog> {
+  late final controller = TextEditingController(text: widget.initialName);
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: const Text('Класс атын өзгерту'),
+    content: TextField(
+      controller: controller,
+      autofocus: true,
+      maxLength: 80,
+      decoration: const InputDecoration(labelText: 'Класс атауы'),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: const Text('Болдырмау'),
+      ),
+      FilledButton(
+        onPressed: () => Navigator.of(context).pop(controller.text.trim()),
+        child: const Text('Сақтау'),
+      ),
+    ],
+  );
 }
 
 class _ClassPosts extends StatelessWidget {

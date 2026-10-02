@@ -25,48 +25,6 @@ class _AssistantPageState extends State<AssistantPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(18, 7, 18, 14),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFE8EDFF), Color(0xFFF2ECFF)],
-              ),
-              borderRadius: BorderRadius.circular(22),
-            ),
-            child: const Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  foregroundColor: primary,
-                  child: Icon(Icons.auto_awesome_rounded),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Сәлем, мен PhysAI',
-                        style: TextStyle(
-                          color: navy,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 15,
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'Күрделі есепті бірге бөлшектеп шешеміз',
-                        style: TextStyle(color: muted, fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(18),
