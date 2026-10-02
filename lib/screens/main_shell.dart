@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 import '../app_state.dart';
 import '../physics_data.dart';
+import '../services/phys_ai_service.dart';
 import '../widgets/common.dart';
 import 'auth_flow.dart';
 import 'classroom_screen.dart';
