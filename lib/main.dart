@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'app_state.dart';
 import 'firebase_options.dart';
 import 'screens/auth_flow.dart';
+import 'screens/session_gate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,25 +38,44 @@ class _PhysLabAppState extends State<PhysLabApp> {
         theme: ThemeData(
           useMaterial3: true,
           fontFamily: 'Montserrat',
-          colorScheme: ColorScheme.fromSeed(seedColor: primary),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: primary,
+            brightness: Brightness.light,
+            surface: Colors.white,
+          ),
           scaffoldBackgroundColor: canvas,
           appBarTheme: const AppBarTheme(
             backgroundColor: canvas,
             foregroundColor: navy,
             surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
             centerTitle: false,
             titleTextStyle: TextStyle(
               fontFamily: 'Montserrat',
               color: navy,
-              fontSize: 21,
+              fontSize: 19,
               fontWeight: FontWeight.w800,
               letterSpacing: -.4,
             ),
           ),
+          dividerTheme: const DividerThemeData(
+            color: Color(0xFFE9EEF5),
+            space: 1,
+          ),
+          cardTheme: CardThemeData(
+            color: Colors.white,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(22),
+              side: const BorderSide(color: Color(0xFFE8EDF5)),
+            ),
+          ),
           pageTransitionsTheme: const PageTransitionsTheme(
             builders: {
-              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.iOS: _PhysLabPageTransitionsBuilder(),
+              TargetPlatform.android: _PhysLabPageTransitionsBuilder(),
             },
           ),
           bottomSheetTheme: const BottomSheetThemeData(
@@ -85,26 +105,53 @@ class _PhysLabAppState extends State<PhysLabApp> {
           ),
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
-            fillColor: Colors.white,
+            fillColor: const Color(0xFFFDFEFF),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 18,
               vertical: 17,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(17),
+              borderRadius: BorderRadius.circular(15),
               borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(17),
+              borderRadius: BorderRadius.circular(15),
               borderSide: const BorderSide(color: Color(0xFFE6EAF2)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(17),
+              borderRadius: BorderRadius.circular(15),
               borderSide: const BorderSide(color: primary, width: 1.5),
             ),
           ),
         ),
-        home: const OnboardingScreen(),
+        home: Firebase.apps.isEmpty
+            ? const OnboardingScreen()
+            : SessionGate(appState: appState),
+      ),
+    );
+  }
+}
+
+class _PhysLabPageTransitionsBuilder extends PageTransitionsBuilder {
+  const _PhysLabPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    if (MediaQuery.disableAnimationsOf(context) || route.isFirst) {
+      return child;
+    }
+    final entrance = animation.drive(CurveTween(curve: Curves.easeOutCubic));
+    return FadeTransition(
+      opacity: entrance,
+      child: ScaleTransition(
+        scale: entrance.drive(Tween<double>(begin: .97, end: 1)),
+        child: child,
       ),
     );
   }

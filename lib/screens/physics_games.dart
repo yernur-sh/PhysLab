@@ -36,7 +36,7 @@ class _GamePage extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFFEFF2FF), canvas, Color(0xFFF8FAFF)],
+          colors: [Color(0xFFF2F6FF), canvas, Colors.white],
         ),
       ),
       child: SafeArea(top: false, child: child),
@@ -60,11 +60,12 @@ class _GameIntro extends StatelessWidget {
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
       gradient: const LinearGradient(
-        colors: [Color(0xFF17294D), Color(0xFF4F65CB)],
+        colors: [Color(0xFFE8EEFF), Color(0xFFF4F7FF)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
-      borderRadius: BorderRadius.circular(25),
+      borderRadius: BorderRadius.circular(22),
+      border: Border.all(color: const Color(0xFFDDE6FA)),
     ),
     child: Row(
       children: [
@@ -72,10 +73,10 @@ class _GameIntro extends StatelessWidget {
           width: 52,
           height: 52,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: .15),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(17),
           ),
-          child: Icon(icon, color: Colors.white, size: 28),
+          child: Icon(icon, color: primary, size: 28),
         ),
         const SizedBox(width: 14),
         Expanded(
@@ -85,7 +86,7 @@ class _GameIntro extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: navy,
                   fontSize: 19,
                   fontWeight: FontWeight.w900,
                 ),
@@ -93,7 +94,7 @@ class _GameIntro extends StatelessWidget {
               const SizedBox(height: 5),
               Text(
                 description,
-                style: const TextStyle(color: Color(0xFFE1E8FF), height: 1.35),
+                style: const TextStyle(color: muted, height: 1.35),
               ),
             ],
           ),

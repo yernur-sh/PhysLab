@@ -18,9 +18,9 @@ class ProfileScreen extends StatelessWidget {
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF182B50), Color(0xFF5068D5)],
+              colors: [Color(0xFF213A78), Color(0xFF5A73D9)],
             ),
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(24),
           ),
           child: Column(
             children: [
@@ -28,7 +28,7 @@ class ProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white54, width: 1.5),
+                  border: Border.all(color: Colors.white, width: 3),
                 ),
                 child: UserAvatar(profile: profile, radius: 44),
               ),
@@ -54,7 +54,7 @@ class ProfileScreen extends StatelessWidget {
                   vertical: 7,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: .15),
+                  color: Colors.white.withValues(alpha: .16),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

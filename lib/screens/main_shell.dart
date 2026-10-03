@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +39,7 @@ class _MainShellState extends State<MainShell>
   int index = 0;
   late final AnimationController tabTransition = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 220),
+    duration: const Duration(milliseconds: 290),
     value: 1,
   );
 
@@ -133,27 +132,45 @@ class _LabHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(22, 12, 20, 14),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(22, 10, 8, 17),
+      color: canvas,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const BrandMark(size: 34),
-              const SizedBox(width: 10),
+              const BrandMark(size: 30),
+              const SizedBox(width: 9),
               const Text(
                 'PhysLab',
                 style: TextStyle(
                   color: navy,
-                  fontSize: 18,
+                  fontSize: 15,
                   fontWeight: FontWeight.w900,
                   letterSpacing: -.4,
                 ),
               ),
+              const Spacer(),
+              const Expanded(
+                flex: 3,
+                child: Text(
+                  'Жоба жетекшісі: Жұмабаева Қарашаш\nБұхарбекқызы',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: Color(0xFF4C5E91),
+                    fontSize: 10,
+                    height: 1.25,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 13),
           AnimatedSwitcher(
             duration: Duration(
               milliseconds: MediaQuery.disableAnimationsOf(context) ? 0 : 180,
@@ -168,7 +185,7 @@ class _LabHeader extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: navy,
-                    fontSize: 30,
+                    fontSize: 27,
                     height: 1.08,
                     letterSpacing: -.9,
                     fontWeight: FontWeight.w900,
@@ -221,78 +238,69 @@ class _FloatingTabBar extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 560),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 17),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(27),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
-                    vertical: 6,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(color: const Color(0xFFE8EDF5)),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x1024345C),
+                    blurRadius: 20,
+                    offset: Offset(0, 5),
                   ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: .87),
-                    borderRadius: BorderRadius.circular(27),
-                    border: Border.all(color: Colors.white),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x1F24345C),
-                        blurRadius: 28,
-                        offset: Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: List.generate(items.length, (index) {
-                      final selected = index == selectedIndex;
-                      return Expanded(
-                        child: Semantics(
-                          button: true,
-                          selected: selected,
-                          label: items[index].$2,
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () => onSelected(index),
-                            child: AnimatedContainer(
-                              duration: Duration(
-                                milliseconds: reduceMotion ? 0 : 220,
+                ],
+              ),
+              child: Row(
+                children: List.generate(items.length, (index) {
+                  final selected = index == selectedIndex;
+                  return Expanded(
+                    child: Semantics(
+                      button: true,
+                      selected: selected,
+                      label: items[index].$2,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => onSelected(index),
+                        child: AnimatedContainer(
+                          duration: Duration(
+                            milliseconds: reduceMotion ? 0 : 260,
+                          ),
+                          curve: Curves.easeInOutCubic,
+                          height: 55,
+                          decoration: BoxDecoration(
+                            color: selected ? primary : Colors.transparent,
+                            borderRadius: BorderRadius.circular(17),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                items[index].$1,
+                                color: selected ? Colors.white : muted,
+                                size: 22,
                               ),
-                              curve: Curves.easeInOutCubic,
-                              height: 57,
-                              decoration: BoxDecoration(
-                                color: selected ? primary : Colors.transparent,
-                                borderRadius: BorderRadius.circular(21),
+                              const SizedBox(height: 2),
+                              Text(
+                                items[index].$2,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: selected ? Colors.white : muted,
+                                  fontSize: 10,
+                                  fontWeight: selected
+                                      ? FontWeight.w800
+                                      : FontWeight.w600,
+                                ),
                               ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    items[index].$1,
-                                    color: selected ? Colors.white : muted,
-                                    size: 23,
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    items[index].$2,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: selected ? Colors.white : muted,
-                                      fontSize: 10,
-                                      fontWeight: selected
-                                          ? FontWeight.w800
-                                          : FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            ],
                           ),
                         ),
-                      );
-                    }),
-                  ),
-                ),
+                      ),
+                    ),
+                  );
+                }),
               ),
             ),
           ),

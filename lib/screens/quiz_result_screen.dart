@@ -105,9 +105,10 @@ class _ResultPage extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF17294D), Color(0xFF536BDE)],
+                colors: [Color(0xFFE8EEFF), Color(0xFFF4F7FF)],
               ),
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: const Color(0xFFDDE6FA)),
             ),
             child: Column(
               children: [
@@ -117,7 +118,7 @@ class _ResultPage extends StatelessWidget {
                   headline,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: navy,
                     fontSize: 25,
                     fontWeight: FontWeight.w900,
                   ),
@@ -126,7 +127,7 @@ class _ResultPage extends StatelessWidget {
                 Text(
                   subtitle,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Color(0xFFDCE5FF)),
+                  style: const TextStyle(color: muted),
                 ),
                 const SizedBox(height: 26),
                 SizedBox(
@@ -139,8 +140,8 @@ class _ResultPage extends StatelessWidget {
                         child: CircularProgressIndicator(
                           value: percent,
                           strokeWidth: 13,
-                          backgroundColor: Colors.white24,
-                          color: mint,
+                          backgroundColor: Colors.white,
+                          color: primary,
                         ),
                       ),
                       Column(
@@ -149,14 +150,14 @@ class _ResultPage extends StatelessWidget {
                           Text(
                             '${(percent * 100).round()}%',
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: navy,
                               fontSize: 35,
                               fontWeight: FontWeight.w900,
                             ),
                           ),
                           Text(
                             '$correct / $total дұрыс',
-                            style: const TextStyle(color: Color(0xFFDCE5FF)),
+                            style: const TextStyle(color: muted),
                           ),
                         ],
                       ),

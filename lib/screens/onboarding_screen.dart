@@ -5,7 +5,9 @@ import '../widgets/common.dart';
 import 'auth_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  const OnboardingScreen({super.key, this.onContinue});
+
+  final Future<void> Function(BuildContext context)? onContinue;
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -14,6 +16,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final controller = PageController();
   int page = 0;
+  bool opening = false;
 
   static const pages = [
     (
@@ -86,8 +89,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                       TextButton(
-                        onPressed: _openAuth,
-                        child: const Text('Өткізу'),
+                        onPressed: opening ? null : _openAuth,
+                        child: Text(opening ? 'Күтіңіз…' : 'Өткізу'),
                       ),
                     ],
                   ),
@@ -261,6 +264,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   const SizedBox(height: 28),
                   PrimaryButton(
                     label: page == pages.length - 1 ? 'Бастау' : 'Жалғастыру',
+                    loading: opening,
                     onPressed: () {
                       if (page == pages.length - 1) {
                         _openAuth();
@@ -286,9 +290,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  void _openAuth() => Navigator.of(
-    context,
-  ).pushReplacement(MaterialPageRoute(builder: (_) => const AuthScreen()));
+  Future<void> _openAuth() async {
+    if (opening) return;
+    if (widget.onContinue == null) {
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (_) => const AuthScreen()));
+      return;
+    }
+    setState(() => opening = true);
+    try {
+      await widget.onContinue!(context);
+    } finally {
+      if (mounted) setState(() => opening = false);
+    }
+  }
 }
 
 class _ProjectMentorPage extends StatelessWidget {

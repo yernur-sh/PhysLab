@@ -25,7 +25,16 @@ class _TopicsPageState extends State<TopicsPage> {
         Expanded(
           child: AnimatedSwitcher(
             duration: Duration(
-              milliseconds: MediaQuery.disableAnimationsOf(context) ? 0 : 220,
+              milliseconds: MediaQuery.disableAnimationsOf(context) ? 0 : 200,
+            ),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: .985, end: 1).animate(animation),
+                child: child,
+              ),
             ),
             child: ListView.separated(
               key: ValueKey(formulas),

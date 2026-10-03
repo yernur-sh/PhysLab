@@ -1,8 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:physlab/main.dart';
+import 'package:physlab/screens/onboarding_screen.dart';
 
 void main() {
+  testWidgets('onboarding can continue a restored session without auth', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(430, 900));
+    var continued = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OnboardingScreen(onContinue: (_) async => continued = true),
+      ),
+    );
+
+    expect(find.text('Физиканы сезініп үйрен'), findsOneWidget);
+    await tester.tap(find.text('Өткізу'));
+    await tester.pumpAndSettle();
+    expect(continued, isTrue);
+    expect(find.text('Аккаунт құру'), findsNothing);
+  });
+
   testWidgets('onboarding opens registration', (tester) async {
     await tester.binding.setSurfaceSize(const Size(430, 900));
     await tester.pumpWidget(const PhysLabApp());

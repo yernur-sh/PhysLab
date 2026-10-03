@@ -27,9 +27,10 @@ class _TopicCheckScreenState extends State<TopicCheckScreen> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF17294D), Color(0xFF4F65CB)],
+                colors: [Color(0xFFE8EEFF), Color(0xFFF4F7FF)],
               ),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: const Color(0xFFDDE6FA)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +38,7 @@ class _TopicCheckScreenState extends State<TopicCheckScreen> {
                 Text(
                   widget.topic.title,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: navy,
                     fontSize: 19,
                     fontWeight: FontWeight.w900,
                   ),
@@ -45,13 +46,13 @@ class _TopicCheckScreenState extends State<TopicCheckScreen> {
                 const SizedBox(height: 10),
                 Text(
                   '${current + 1} / 5 сұрақ · өту үшін кемінде 4 дұрыс жауап',
-                  style: const TextStyle(color: Color(0xFFDCE4FF)),
+                  style: const TextStyle(color: muted),
                 ),
                 const SizedBox(height: 12),
                 LinearProgressIndicator(
                   value: (current + 1) / questions.length,
-                  backgroundColor: Colors.white24,
-                  color: mint,
+                  backgroundColor: Colors.white,
+                  color: primary,
                   minHeight: 7,
                   borderRadius: BorderRadius.circular(8),
                 ),

@@ -83,9 +83,9 @@ class _ClassroomScreenState extends State<ClassroomScreen>
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF172A53), Color(0xFF536BDE)],
+                      colors: [Color(0xFF213A78), Color(0xFF5A73D9)],
                     ),
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(22),
                   ),
                   child: Row(
                     children: [
@@ -111,7 +111,7 @@ class _ClassroomScreenState extends State<ClassroomScreen>
                             ),
                             Text(
                               '${widget.physicsClass.grade}-сынып · ${widget.physicsClass.code}',
-                              style: const TextStyle(color: Color(0xFFDDE5FF)),
+                              style: const TextStyle(color: Color(0xFFDCE5FF)),
                             ),
                           ],
                         ),
@@ -127,10 +127,7 @@ class _ClassroomScreenState extends State<ClassroomScreen>
                               showMessage(context, 'Класс коды көшірілді');
                             }
                           },
-                          icon: const Icon(
-                            Icons.copy_rounded,
-                            color: Colors.white,
-                          ),
+                          icon: const Icon(Icons.copy_rounded, color: primary),
                         ),
                     ],
                   ),
@@ -447,7 +444,7 @@ class _ClassPosts extends StatelessWidget {
                           Text(
                             'Мерзімі: ${_date(due)}',
                             style: const TextStyle(
-                              color: primary,
+                              color: Colors.white,
                               fontWeight: FontWeight.w700,
                             ),
                           ),

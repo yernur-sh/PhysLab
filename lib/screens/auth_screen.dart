@@ -64,13 +64,11 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 27),
-                const SizedBox(height: 31),
-                const SizedBox(height: 14),
+                const SizedBox(height: 56),
                 Text(
                   isLogin ? 'Қайта оралғаныңа қуаныштымыз!' : 'Аккаунт құру',
                   style: const TextStyle(
-                    fontSize: 30,
+                    fontSize: 28,
                     height: 1.15,
                     fontWeight: FontWeight.w900,
                     letterSpacing: -.8,
@@ -82,10 +80,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   isLogin
                       ? 'Оқуды жалғастыру үшін жүйеге кір.'
                       : 'Өзіңе сәйкес рөлді таңдап, PhysLab-қа қосыл.',
-                  style: const TextStyle(
-                    color: Color(0xFF747B90),
-                    fontSize: 16,
-                  ),
+                  style: const TextStyle(color: muted, fontSize: 14),
                 ),
                 const SizedBox(height: 26),
                 if (!isLogin) ...[

@@ -55,7 +55,7 @@ class PrimaryButton extends StatelessWidget {
           backgroundColor: primary,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(17),
+            borderRadius: BorderRadius.circular(15),
           ),
         ),
       ),
@@ -81,20 +81,20 @@ class SoftCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: color,
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(20),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(20),
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: Colors.white.withValues(alpha: .82)),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: const Color(0xFFE1E7F6)),
             boxShadow: const [
               BoxShadow(
-                color: Color(0x0B273968),
-                blurRadius: 22,
-                offset: Offset(0, 8),
+                color: Color(0x102B4BA3),
+                blurRadius: 20,
+                offset: Offset(0, 7),
               ),
             ],
           ),
@@ -121,11 +121,11 @@ class IosSegmentedControl extends StatelessWidget {
   Widget build(BuildContext context) {
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
     return Container(
-      height: 49,
+      height: 48,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: const Color(0xFFE9EDF6),
-        borderRadius: BorderRadius.circular(17),
+        color: const Color(0xFFEEF2F8),
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
         children: List.generate(labels.length, (index) {
@@ -144,7 +144,7 @@ class IosSegmentedControl extends StatelessWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: selected ? Colors.white : Colors.transparent,
-                  borderRadius: BorderRadius.circular(13),
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: selected
                       ? const [
                           BoxShadow(

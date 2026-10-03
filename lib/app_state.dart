@@ -407,5 +407,5 @@ const navy = Color(0xFF132340);
 const coral = Color(0xFFFF7F78);
 const mint = Color(0xFF55CFAF);
 const sunny = Color(0xFFFFBF5B);
-const canvas = Color(0xFFF4F6FC);
+const canvas = Color(0xFFF1F3FF);
 const muted = Color(0xFF79849A);
