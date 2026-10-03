@@ -3,4 +3,6 @@
     <item android:drawable="@color/launch_background" />
     <item android:width="104dp" android:height="104dp"
         android:gravity="center" android:drawable="@drawable/physlab_prism_icon" />
+    <item android:width="104dp" android:height="104dp"
+        android:gravity="center" android:drawable="@drawable/splash_icon_rounded_corners" />
 </layer-list>
