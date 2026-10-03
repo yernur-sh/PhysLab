@@ -72,100 +72,131 @@ class _ClassroomScreenState extends State<ClassroomScreen>
             ),
         ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(18, 4, 18, 12),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF172A53), Color(0xFF536BDE)],
-                ),
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 24,
-                    backgroundColor: Color(0x33FFFFFF),
-                    child: Icon(Icons.groups_rounded, color: Colors.white),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18, 4, 18, 12),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF172A53), Color(0xFF536BDE)],
+                    ),
+                    borderRadius: BorderRadius.circular(25),
                   ),
-                  const SizedBox(width: 13),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          className,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 24,
+                        backgroundColor: Color(0x33FFFFFF),
+                        child: Icon(Icons.groups_rounded, color: Colors.white),
+                      ),
+                      const SizedBox(width: 13),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              className,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                fontSize: 18,
+                              ),
+                            ),
+                            Text(
+                              '${widget.physicsClass.grade}-сынып · ${widget.physicsClass.code}',
+                              style: const TextStyle(color: Color(0xFFDDE5FF)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (isTeacher)
+                        IconButton(
+                          tooltip: 'Класс кодын көшіру',
+                          onPressed: () async {
+                            await Clipboard.setData(
+                              ClipboardData(text: widget.physicsClass.code),
+                            );
+                            if (context.mounted) {
+                              showMessage(context, 'Класс коды көшірілді');
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.copy_rounded,
                             color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 18,
                           ),
                         ),
-                        Text(
-                          '${widget.physicsClass.grade}-сынып · ${widget.physicsClass.code}',
-                          style: const TextStyle(color: Color(0xFFDDE5FF)),
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
-                  if (isTeacher)
-                    IconButton(
-                      tooltip: 'Класс кодын көшіру',
-                      onPressed: () async {
-                        await Clipboard.setData(
-                          ClipboardData(text: widget.physicsClass.code),
-                        );
-                        if (context.mounted) {
-                          showMessage(context, 'Класс коды көшірілді');
-                        }
-                      },
-                      icon: const Icon(Icons.copy_rounded, color: Colors.white),
-                    ),
+                ),
+              ),
+              TabBar(
+                controller: tabs,
+                labelColor: primary,
+                unselectedLabelColor: muted,
+                indicatorColor: primary,
+                indicatorSize: TabBarIndicatorSize.tab,
+                tabs: const [
+                  Tab(text: 'Хабарламалар'),
+                  Tab(text: 'Үй жұмысы'),
+                  Tab(text: 'Оқушылар'),
                 ],
               ),
-            ),
-          ),
-          TabBar(
-            controller: tabs,
-            labelColor: primary,
-            unselectedLabelColor: muted,
-            indicatorColor: primary,
-            indicatorSize: TabBarIndicatorSize.tab,
-            tabs: const [
-              Tab(text: 'Хабарламалар'),
-              Tab(text: 'Үй жұмысы'),
-              Tab(text: 'Оқушылар'),
+              Expanded(
+                child: TabBarView(
+                  controller: tabs,
+                  children: [
+                    _ClassPosts(
+                      classRef: classRef,
+                      type: 'announcement',
+                      profile: profile,
+                      isTeacher: isTeacher,
+                    ),
+                    _ClassPosts(
+                      classRef: classRef,
+                      type: 'homework',
+                      profile: profile,
+                      isTeacher: isTeacher,
+                    ),
+                    _ClassStudents(classRef: classRef),
+                  ],
+                ),
+              ),
             ],
           ),
-          Expanded(
-            child: TabBarView(
-              controller: tabs,
-              children: [
-                _ClassPosts(
-                  classRef: classRef,
-                  type: 'announcement',
-                  profile: profile,
-                  isTeacher: isTeacher,
+          if (managingClass)
+            Positioned.fill(
+              child: ColoredBox(
+                color: Colors.white70,
+                child: Center(
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 24,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 16),
+                          Text('Класс жаңартылып жатыр…'),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                _ClassPosts(
-                  classRef: classRef,
-                  type: 'homework',
-                  profile: profile,
-                  isTeacher: isTeacher,
-                ),
-                _ClassStudents(classRef: classRef),
-              ],
+              ),
             ),
-          ),
         ],
       ),
-      floatingActionButton: isTeacher && tabs.index != 2
+      floatingActionButton: isTeacher && tabs.index != 2 && !managingClass
           ? FloatingActionButton.extended(
               onPressed: () => _editPost(
                 context,

@@ -357,9 +357,9 @@ class _MentorBackdrop extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              canvas.withValues(alpha: .31),
-              canvas.withValues(alpha: .22),
-              canvas.withValues(alpha: .52),
+              canvas.withValues(alpha: .08),
+              canvas.withValues(alpha: .04),
+              canvas.withValues(alpha: .28),
               canvas,
             ],
             stops: const [0, .38, .69, 1],

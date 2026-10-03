@@ -23,7 +23,10 @@ void main() {
       const MaterialApp(home: Scaffold(body: AssistantPage())),
     );
     expect(find.text('Сәлем, мен PhysAI'), findsNothing);
-    expect(find.textContaining('Сәлем! Мен PhysAI көмекшісімін'), findsOneWidget);
+    expect(
+      find.textContaining('Сәлем! Мен PhysAI көмекшісімін'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('profile uses Google photo and email default avatar', (
@@ -77,7 +80,7 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('Зертхана'), findsOneWidget);
-    expect(find.byKey(const Key('profile-button')), findsOneWidget);
+    expect(find.byKey(const Key('profile-button')), findsNothing);
 
     await tester.tap(find.text('Тақырып').last);
     await tester.pumpAndSettle();
@@ -93,9 +96,9 @@ void main() {
     expect(find.text('Формулалар'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    await tester.tap(find.byKey(const Key('profile-button')));
+    await tester.tap(find.text('Профиль').last);
     await tester.pumpAndSettle();
-    expect(find.text('Профиль'), findsOneWidget);
+    expect(find.text('Профиль'), findsNWidgets(2));
   });
 
   testWidgets('safe header and distinct topic/formula lessons', (tester) async {

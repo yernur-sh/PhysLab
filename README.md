@@ -13,7 +13,7 @@ Firebase жобасында Email/Password және Google Authentication про
 
 ## PhysAI (Groq)
 
-PhysAI жеке прототипте Groq-қа телефоннан тікелей сұрау жібереді. Firebase Blaze, Cloud Functions немесе басқа сервер қажет емес. Groq Free жоспарының сұрау лимиті бар. Жоба түбіндегі `physai.local.json` файлын ашып, `GROQ_API_KEY` мәніне өз кілтіңізді қойыңыз. `physai.example.json` — кілтсіз үлгі. Жеке файл Git арқылы жарияланбайды. Сосын қолданбаны былай іске қосыңыз:
+PhysAI жеке прототипте Groq-қа телефоннан тікелей сұрау жібереді. Firebase Blaze, Cloud Functions немесе басқа сервер қажет емес. Groq Free жоспарының сұрау лимиті бар. Android Studio-дағы кәдімгі Run арқылы жұмыс істеуі үшін жоба түбіндегі `physai.local.json` файлын `assets/config/physai.local.json` файлына көшіріңіз немесе сонда `GROQ_API_KEY` мәнін қойыңыз. Файл Git арқылы жарияланбайды. Осыдан кейін қолданбаны толық қайта іске қосыңыз (hot reload жеткіліксіз). APK ішінде кілт болатындықтан бұл тек жеке прототипке арналған; жария таратпаңыз. Балама ретінде бұрынғыдай build-time кілтті де беруге болады:
 
 ```sh
 flutter run --dart-define-from-file=physai.local.json

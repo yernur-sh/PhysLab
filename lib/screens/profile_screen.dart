@@ -9,208 +9,205 @@ class ProfileScreen extends StatelessWidget {
     final profile =
         state.profile ??
         const UserProfile(name: 'Қолданушы', email: '', role: UserRole.student);
-    return Scaffold(
-      appBar: AppBar(title: const Text('Профиль')),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF182B50), Color(0xFF5068D5)],
-              ),
-              borderRadius: BorderRadius.circular(30),
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF182B50), Color(0xFF5068D5)],
             ),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white54, width: 1.5),
-                  ),
-                  child: UserAvatar(profile: profile, radius: 44),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white54, width: 1.5),
                 ),
-                const SizedBox(height: 14),
-                Text(
-                  profile.name,
-                  textAlign: TextAlign.center,
+                child: UserAvatar(profile: profile, radius: 44),
+              ),
+              const SizedBox(height: 14),
+              Text(
+                profile.name,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 23,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                profile.email,
+                style: const TextStyle(color: Color(0xFFDCE5FF)),
+              ),
+              const SizedBox(height: 11),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 13,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: .15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  profile.role == UserRole.teacher ? 'МҰҒАЛІМ' : 'ОҚУШЫ',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 23,
+                    fontSize: 10,
                     fontWeight: FontWeight.w900,
+                    letterSpacing: 1.3,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  profile.email,
-                  style: const TextStyle(color: Color(0xFFDCE5FF)),
-                ),
-                const SizedBox(height: 11),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 13,
-                    vertical: 7,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: .15),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    profile.role == UserRole.teacher ? 'МҰҒАЛІМ' : 'ОҚУШЫ',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.3,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              _ProfileMetric(
-                Icons.bolt_rounded,
-                '${state.points}',
-                'Ұпай',
-                sunny,
-              ),
-              const SizedBox(width: 9),
-              _ProfileMetric(
-                Icons.school_rounded,
-                '${state.masteredTopicCount}',
-                'Тақырып',
-                mint,
-              ),
-              const SizedBox(width: 9),
-              _ProfileMetric(
-                Icons.emoji_events_rounded,
-                '${state.fullyCompletedQuizzes}',
-                '100% тест',
-                coral,
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          const Text(
-            'Практика нәтижесі',
-            style: TextStyle(
-              color: navy,
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
+        ),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            _ProfileMetric(
+              Icons.bolt_rounded,
+              '${state.points}',
+              'Ұпай',
+              sunny,
             ),
+            const SizedBox(width: 9),
+            _ProfileMetric(
+              Icons.school_rounded,
+              '${state.masteredTopicCount}',
+              'Тақырып',
+              mint,
+            ),
+            const SizedBox(width: 9),
+            _ProfileMetric(
+              Icons.emoji_events_rounded,
+              '${state.fullyCompletedQuizzes}',
+              '100% тест',
+              coral,
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        const Text(
+          'Практика нәтижесі',
+          style: TextStyle(
+            color: navy,
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
           ),
-          const SizedBox(height: 11),
-          SoftCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${state.fullyCompletedQuizzes} / ${quizSets.length} тест толық орындалды',
-                  style: const TextStyle(
-                    color: navy,
-                    fontWeight: FontWeight.w800,
-                  ),
+        ),
+        const SizedBox(height: 11),
+        SoftCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${state.fullyCompletedQuizzes} / ${quizSets.length} тест толық орындалды',
+                style: const TextStyle(
+                  color: navy,
+                  fontWeight: FontWeight.w800,
                 ),
-                const SizedBox(height: 11),
-                LinearProgressIndicator(
-                  value: state.fullyCompletedQuizzes / quizSets.length,
-                  minHeight: 8,
-                  borderRadius: BorderRadius.circular(8),
-                  backgroundColor: const Color(0xFFE9EDFF),
-                  color: primary,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Кластарым: ${state.classes.length} · Тест ұпайлары: ${state.points}',
-                  style: const TextStyle(color: muted, fontSize: 12),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 11),
+              LinearProgressIndicator(
+                value: state.fullyCompletedQuizzes / quizSets.length,
+                minHeight: 8,
+                borderRadius: BorderRadius.circular(8),
+                backgroundColor: const Color(0xFFE9EDFF),
+                color: primary,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Кластарым: ${state.classes.length} · Тест ұпайлары: ${state.points}',
+                style: const TextStyle(color: muted, fontSize: 12),
+              ),
+            ],
           ),
-          const SizedBox(height: 24),
-          SoftCard(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const MasteredTopicsScreen()),
-            ),
-            child: Row(
-              children: [
-                const CircleAvatar(
-                  radius: 23,
-                  backgroundColor: Color(0xFFE6F7F2),
-                  foregroundColor: Color(0xFF279B7B),
-                  child: Icon(Icons.school_rounded),
-                ),
-                const SizedBox(width: 13),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Меңгерілген тақырыптар',
-                        style: TextStyle(
-                          color: navy,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w800,
-                        ),
+        ),
+        const SizedBox(height: 24),
+        SoftCard(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const MasteredTopicsScreen()),
+          ),
+          child: Row(
+            children: [
+              const CircleAvatar(
+                radius: 23,
+                backgroundColor: Color(0xFFE6F7F2),
+                foregroundColor: Color(0xFF279B7B),
+                child: Icon(Icons.school_rounded),
+              ),
+              const SizedBox(width: 13),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Меңгерілген тақырыптар',
+                      style: TextStyle(
+                        color: navy,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w800,
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        '${state.masteredTopicCount} тақырып меңгерілді',
-                        style: const TextStyle(color: muted, fontSize: 13),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      '${state.masteredTopicCount} тақырып меңгерілді',
+                      style: const TextStyle(color: muted, fontSize: 13),
+                    ),
+                  ],
                 ),
-                const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: primary,
-                  size: 18,
-                ),
-              ],
-            ),
+              ),
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: primary,
+                size: 18,
+              ),
+            ],
           ),
-          const SizedBox(height: 18),
-          OutlinedButton.icon(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ChangePasswordScreen()),
-            ),
-            icon: const Icon(Icons.lock_reset_rounded),
-            label: const Text('Құпиясөзді өзгерту'),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size.fromHeight(54),
-            ),
+        ),
+        const SizedBox(height: 18),
+        OutlinedButton.icon(
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const ChangePasswordScreen()),
           ),
-          const SizedBox(height: 12),
-          OutlinedButton.icon(
-            onPressed: () async {
-              try {
-                await FirebaseAuth.instance.signOut();
-              } catch (_) {}
-              if (!context.mounted) return;
-              state.signOut();
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (_) => const AuthScreen(initialLogin: true),
-                ),
-                (_) => false,
-              );
-            },
-            icon: const Icon(Icons.logout_rounded),
-            label: const Text('Аккаунттан шығу'),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFFE45757),
-              minimumSize: const Size.fromHeight(54),
-            ),
+          icon: const Icon(Icons.lock_reset_rounded),
+          label: const Text('Құпиясөзді өзгерту'),
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size.fromHeight(54),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: () async {
+            try {
+              await FirebaseAuth.instance.signOut();
+            } catch (_) {}
+            if (!context.mounted) return;
+            state.signOut();
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (_) => const AuthScreen(initialLogin: true),
+              ),
+              (_) => false,
+            );
+          },
+          icon: const Icon(Icons.logout_rounded),
+          label: const Text('Аккаунттан шығу'),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFFE45757),
+            minimumSize: const Size.fromHeight(54),
+          ),
+        ),
+      ],
     );
   }
 }

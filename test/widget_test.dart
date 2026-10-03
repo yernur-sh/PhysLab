@@ -14,7 +14,7 @@ void main() {
     );
     expect(
       (mark.image as AssetImage).assetName,
-      'assets/branding/physlab_icon.png',
+      'assets/branding/physlab_prism_icon.png',
     );
 
     await tester.tap(find.text('Өткізу'));
@@ -51,7 +51,9 @@ void main() {
     expect(find.text('СЕНІҢ ФИЗИКА ЗЕРТХАНАҢ'), findsNothing);
   });
 
-  testWidgets('student Google registration needs no typed name', (tester) async {
+  testWidgets('student Google registration needs no typed name', (
+    tester,
+  ) async {
     await tester.binding.setSurfaceSize(const Size(430, 900));
     await tester.pumpWidget(const PhysLabApp());
     await tester.tap(find.text('Өткізу'));

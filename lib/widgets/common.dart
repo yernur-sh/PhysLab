@@ -12,7 +12,7 @@ class BrandMark extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(size * .25),
       child: Image.asset(
-        'assets/branding/physlab_icon.png',
+        'assets/branding/physlab_prism_icon.png',
         key: const Key('physlab-inner-icon'),
         width: size,
         height: size,

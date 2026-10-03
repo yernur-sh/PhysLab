@@ -33,6 +33,7 @@ migrate_working_dir/
 /build/
 /coverage/
 physai.local.json
+/assets/config/physai.local.json
 
 # Symbolication related
 app.*.symbols

@@ -357,6 +357,7 @@ class HomePage extends StatelessWidget {
   void _showCreateClass(BuildContext homeContext) {
     final name = TextEditingController();
     int grade = 7;
+    bool creating = false;
     showModalBottomSheet<void>(
       context: homeContext,
       isScrollControlled: true,
@@ -395,9 +396,11 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               PrimaryButton(
-                label: 'Класс құру',
+                label: creating ? 'Класс құрылып жатыр…' : 'Класс құру',
+                loading: creating,
                 onPressed: () async {
                   if (name.text.trim().isEmpty) return;
+                  setSheetState(() => creating = true);
                   try {
                     final item = await AppStateScope.of(
                       homeContext,
@@ -417,6 +420,10 @@ class HomePage extends StatelessWidget {
                         error: true,
                       );
                     }
+                  } finally {
+                    if (sheetContext.mounted) {
+                      setSheetState(() => creating = false);
+                    }
                   }
                 },
                 icon: Icons.add_rounded,
@@ -430,75 +437,87 @@ class HomePage extends StatelessWidget {
 
   void _showJoinClass(BuildContext homeContext) {
     final code = TextEditingController();
+    bool joining = false;
     showModalBottomSheet<void>(
       context: homeContext,
       isScrollControlled: true,
-      builder: (sheetContext) => Padding(
-        padding: EdgeInsets.fromLTRB(
-          24,
-          24,
-          24,
-          MediaQuery.viewInsetsOf(sheetContext).bottom + 24,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Классқа қосылу',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: 8),
-            const Text('Мұғалім жіберген PHY-XXXXXX форматындағы кодты енгіз.'),
-            const SizedBox(height: 18),
-            TextField(
-              controller: code,
-              textCapitalization: TextCapitalization.characters,
-              decoration: const InputDecoration(
-                labelText: 'Класс коды',
-                prefixIcon: Icon(Icons.key_rounded),
+      builder: (sheetContext) => StatefulBuilder(
+        builder: (context, setSheetState) => Padding(
+          padding: EdgeInsets.fromLTRB(
+            24,
+            24,
+            24,
+            MediaQuery.viewInsetsOf(sheetContext).bottom + 24,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Классқа қосылу',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
               ),
-            ),
-            const SizedBox(height: 20),
-            PrimaryButton(
-              label: 'Қосылу',
-              onPressed: () async {
-                try {
-                  final ok = await AppStateScope.of(
-                    homeContext,
-                  ).joinClass(code.text);
-                  if (!homeContext.mounted) return;
-                  if (ok) {
-                    Navigator.pop(sheetContext);
-                    final item = AppStateScope.of(homeContext).classes
-                        .firstWhere(
-                          (item) => item.code == code.text.trim().toUpperCase(),
-                        );
-                    Navigator.of(homeContext).push(
-                      MaterialPageRoute(
-                        builder: (_) => ClassroomScreen(physicsClass: item),
-                      ),
-                    );
-                  } else {
-                    showMessage(
+              const SizedBox(height: 8),
+              const Text(
+                'Мұғалім жіберген PHY-XXXXXX форматындағы кодты енгіз.',
+              ),
+              const SizedBox(height: 18),
+              TextField(
+                controller: code,
+                textCapitalization: TextCapitalization.characters,
+                decoration: const InputDecoration(
+                  labelText: 'Класс коды',
+                  prefixIcon: Icon(Icons.key_rounded),
+                ),
+              ),
+              const SizedBox(height: 20),
+              PrimaryButton(
+                label: joining ? 'Классқа қосылып жатыр…' : 'Қосылу',
+                loading: joining,
+                onPressed: () async {
+                  setSheetState(() => joining = true);
+                  try {
+                    final ok = await AppStateScope.of(
                       homeContext,
-                      'Код қате немесе класс табылмады',
-                      error: true,
-                    );
+                    ).joinClass(code.text);
+                    if (!homeContext.mounted) return;
+                    if (ok) {
+                      Navigator.pop(sheetContext);
+                      final item = AppStateScope.of(homeContext).classes
+                          .firstWhere(
+                            (item) =>
+                                item.code == code.text.trim().toUpperCase(),
+                          );
+                      Navigator.of(homeContext).push(
+                        MaterialPageRoute(
+                          builder: (_) => ClassroomScreen(physicsClass: item),
+                        ),
+                      );
+                    } else {
+                      showMessage(
+                        homeContext,
+                        'Код қате немесе класс табылмады',
+                        error: true,
+                      );
+                    }
+                  } catch (error) {
+                    if (homeContext.mounted) {
+                      showMessage(
+                        homeContext,
+                        'Классқа қосылу мүмкін болмады: $error',
+                        error: true,
+                      );
+                    }
+                  } finally {
+                    if (sheetContext.mounted) {
+                      setSheetState(() => joining = false);
+                    }
                   }
-                } catch (error) {
-                  if (homeContext.mounted) {
-                    showMessage(
-                      homeContext,
-                      'Классқа қосылу мүмкін болмады: $error',
-                      error: true,
-                    );
-                  }
-                }
-              },
-              icon: Icons.login_rounded,
-            ),
-          ],
+                },
+                icon: Icons.login_rounded,
+              ),
+            ],
+          ),
         ),
       ),
     );

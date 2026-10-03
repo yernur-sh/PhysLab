@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
+
 class PhysAiTurn {
   const PhysAiTurn({required this.role, required this.content});
 
@@ -20,20 +22,22 @@ abstract interface class PhysAiResponder {
   Future<String> reply(List<PhysAiTurn> conversation);
 }
 
-/// For a private prototype only. A build-time key can be extracted from an APK.
+/// For a private prototype only. A bundled key can be extracted from an APK.
 class GroqPhysAiResponder implements PhysAiResponder {
   const GroqPhysAiResponder();
 
   static const _apiKey = String.fromEnvironment('GROQ_API_KEY');
+  static const _localKeyAsset = 'assets/config/physai.local.json';
   static final _endpoint = Uri.parse(
     'https://api.groq.com/openai/v1/chat/completions',
   );
 
   @override
   Future<String> reply(List<PhysAiTurn> conversation) async {
-    if (_apiKey.isEmpty || _apiKey == 'ӨЗ_GROQ_API_КІЛТІҢІЗ') {
+    final apiKey = await _resolveApiKey();
+    if (apiKey.isEmpty || apiKey == 'ӨЗ_GROQ_API_КІЛТІҢІЗ') {
       throw const PhysAiException(
-        'Groq кілті қосылмаған. Қолданбаны physai.local.json файлы арқылы іске қосыңыз.',
+        'Groq кілті қосылмаған. assets/config/physai.local.json файлына кілтті енгізіп, қолданбаны қайта іске қосыңыз.',
       );
     }
     if (conversation.isEmpty || conversation.last.role != 'user') {
@@ -47,7 +51,7 @@ class GroqPhysAiResponder implements PhysAiResponder {
           .postUrl(_endpoint)
           .timeout(const Duration(seconds: 15));
       request.headers.contentType = ContentType.json;
-      request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $_apiKey');
+      request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $apiKey');
       request.write(
         jsonEncode({
           'model': 'openai/gpt-oss-120b',
@@ -113,6 +117,17 @@ class GroqPhysAiResponder implements PhysAiResponder {
       throw const PhysAiException('PhysAI-ға қосылу мүмкін болмады.');
     } finally {
       client.close(force: true);
+    }
+  }
+
+  Future<String> _resolveApiKey() async {
+    if (_apiKey.isNotEmpty) return _apiKey.trim();
+    try {
+      final content = await rootBundle.loadString(_localKeyAsset);
+      final data = jsonDecode(content) as Map<String, dynamic>;
+      return (data['GROQ_API_KEY'] as String? ?? '').trim();
+    } catch (_) {
+      return '';
     }
   }
 }

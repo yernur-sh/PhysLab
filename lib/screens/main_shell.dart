@@ -50,12 +50,19 @@ class _MainShellState extends State<MainShell>
     super.dispose();
   }
 
-  static const labels = ['Зертхана', 'Тақырыптар', 'Практика', 'PhysAI'];
+  static const labels = [
+    'Зертхана',
+    'Тақырыптар',
+    'Практика',
+    'PhysAI',
+    'Профиль',
+  ];
   static const descriptions = [
     'Бүгінгі оқу кеңістігі',
     'Физиканы қадамдап меңгер',
     'Біліміңді байқап көр',
     'Сұрағыңды бірге шешейік',
+    'Нәтижелерің мен аккаунтың',
   ];
 
   void _selectTab(int value) {
@@ -67,20 +74,12 @@ class _MainShellState extends State<MainShell>
 
   @override
   Widget build(BuildContext context) {
-    final state = AppStateScope.of(context);
     return Scaffold(
       body: SafeArea(
         bottom: false,
         child: Column(
           children: [
-            _LabHeader(
-              title: labels[index],
-              description: descriptions[index],
-              profile: state.profile,
-              onProfile: () => Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const ProfileScreen())),
-            ),
+            _LabHeader(title: labels[index], description: descriptions[index]),
             Expanded(
               child: AnimatedBuilder(
                 animation: tabTransition,
@@ -110,6 +109,7 @@ class _MainShellState extends State<MainShell>
                     const TopicsPage(),
                     const PracticePage(),
                     const AssistantPage(),
+                    const ProfileScreen(),
                   ],
                 ),
               ),
@@ -126,17 +126,10 @@ class _MainShellState extends State<MainShell>
 }
 
 class _LabHeader extends StatelessWidget {
-  const _LabHeader({
-    required this.title,
-    required this.description,
-    required this.profile,
-    required this.onProfile,
-  });
+  const _LabHeader({required this.title, required this.description});
 
   final String title;
   final String description;
-  final UserProfile? profile;
-  final VoidCallback onProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -156,19 +149,6 @@ class _LabHeader extends StatelessWidget {
                   fontSize: 18,
                   fontWeight: FontWeight.w900,
                   letterSpacing: -.4,
-                ),
-              ),
-              const Spacer(),
-              GestureDetector(
-                key: const Key('profile-button'),
-                onTap: onProfile,
-                child: Container(
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: primary.withValues(alpha: .3)),
-                  ),
-                  child: UserAvatar(profile: profile, radius: 18),
                 ),
               ),
             ],
@@ -226,6 +206,7 @@ class _FloatingTabBar extends StatelessWidget {
     (Icons.menu_book_rounded, 'Тақырып'),
     (Icons.sports_esports_rounded, 'Практика'),
     (Icons.auto_awesome_rounded, 'PhysAI'),
+    (Icons.person_rounded, 'Профиль'),
   ];
 
   @override
