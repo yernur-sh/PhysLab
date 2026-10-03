@@ -83,24 +83,11 @@ service cloud.firestore {
         }
 
         match /submissions/{studentUid} {
+          // Legacy answers can only be removed during post/class/account cleanup.
           allow get: if isTeacher(classId) ||
             (isMember(classId) && studentUid == request.auth.uid);
-          allow list: if isTeacher(classId) ||
-            (isMember(classId) && resource.data.studentUid == request.auth.uid);
-          allow create: if isMember(classId) &&
-            studentUid == request.auth.uid &&
-            request.resource.data.studentUid == request.auth.uid &&
-            request.resource.data.status == 'submitted' &&
-            get(/databases/$(database)/documents/classes/$(classId)/posts/$(postId)).data.type == 'homework';
-          allow update: if (isTeacher(classId) &&
-            request.resource.data.diff(resource.data).changedKeys()
-              .hasOnly(['status', 'reviewedAt']) &&
-            request.resource.data.status == 'accepted') ||
-            (isMember(classId) && studentUid == request.auth.uid &&
-            request.resource.data.studentUid == resource.data.studentUid &&
-            request.resource.data.status == 'submitted' &&
-            request.resource.data.diff(resource.data).changedKeys()
-              .hasOnly(['body', 'studentName', 'status', 'submittedAt']));
+          allow list: if isTeacher(classId);
+          allow create, update: if false;
           allow delete: if isTeacher(classId) ||
             (isMember(classId) && studentUid == request.auth.uid);
         }

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 import '../app_state.dart';
 import '../widgets/common.dart';
-import 'homework_submissions_screen.dart';
 
 class ClassroomScreen extends StatefulWidget {
   const ClassroomScreen({super.key, required this.physicsClass});
@@ -612,31 +611,6 @@ class _ClassPostScreenState extends State<ClassPostScreen> {
                             data['authorName'] as String? ?? '',
                             style: const TextStyle(color: muted),
                           ),
-                          if (data['type'] == 'homework' &&
-                              widget.profile != null) ...[
-                            const SizedBox(height: 16),
-                            FilledButton.icon(
-                              onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => HomeworkSubmissionsScreen(
-                                    postRef: postRef,
-                                    profile: widget.profile!,
-                                    isTeacher: isTeacher,
-                                  ),
-                                ),
-                              ),
-                              icon: Icon(
-                                isTeacher
-                                    ? Icons.fact_check_outlined
-                                    : Icons.upload_file_rounded,
-                              ),
-                              label: Text(
-                                isTeacher
-                                    ? 'Оқушы жауаптары'
-                                    : 'Шешімімді жіберу',
-                              ),
-                            ),
-                          ],
                           if (isTeacher) ...[
                             const SizedBox(height: 12),
                             Align(
