@@ -80,9 +80,9 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('Зертхана'), findsOneWidget);
-    expect(find.text('Жұмабаева Қарашаш\nБұхарбекқызы'), findsOneWidget);
+    expect(find.text('Жоба жетекшісі: Жұмабаева Қарашаш\nБұхарбекқызы'), findsOneWidget);
     expect(
-      tester.getTopRight(find.text('Жұмабаева Қарашаш\nБұхарбекқызы')).dx,
+      tester.getTopRight(find.text('Жоба жетекшісі: Жұмабаева Қарашаш\nБұхарбекқызы')).dx,
       greaterThan(410),
     );
     expect(find.byKey(const Key('profile-button')), findsNothing);

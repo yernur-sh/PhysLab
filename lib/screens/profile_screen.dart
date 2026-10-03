@@ -207,6 +207,16 @@ class ProfileScreen extends StatelessWidget {
             minimumSize: const Size.fromHeight(54),
           ),
         ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: () => showDeleteAccountDialog(context),
+          icon: const Icon(Icons.delete_forever_outlined),
+          label: const Text('Аккаунтты өшіру'),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFFE45757),
+            minimumSize: const Size.fromHeight(54),
+          ),
+        ),
       ],
     );
   }

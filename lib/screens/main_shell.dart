@@ -11,6 +11,7 @@ import '../widgets/common.dart';
 import 'auth_flow.dart';
 import 'classroom_screen.dart';
 import 'change_password_screen.dart';
+import 'delete_account_dialog.dart';
 import 'physics_games.dart';
 
 part 'home_page.dart';

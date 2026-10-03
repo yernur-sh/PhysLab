@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:physlab/main.dart';
 import 'package:physlab/screens/onboarding_screen.dart';
+import 'package:physlab/widgets/common.dart';
 
 void main() {
   testWidgets('onboarding can continue a restored session without auth', (
@@ -43,7 +44,9 @@ void main() {
     expect(find.text('Кіру'), findsOneWidget);
   });
 
-  testWidgets('teacher Google sign-in requires secret code', (tester) async {
+  testWidgets('teacher Google sign-in is available before secret code', (
+    tester,
+  ) async {
     await tester.binding.setSurfaceSize(const Size(430, 1000));
     await tester.pumpWidget(const PhysLabApp());
     await tester.tap(find.text('Өткізу'));
@@ -55,7 +58,11 @@ void main() {
     final googleButton = tester.widget<OutlinedButton>(
       find.byKey(const Key('google-auth-button')),
     );
-    expect(googleButton.onPressed, isNull);
+    expect(googleButton.onPressed, isNotNull);
+    expect(
+      tester.widget<PrimaryButton>(find.byType(PrimaryButton)).onPressed,
+      isNull,
+    );
 
     await tester.enterText(
       find.byKey(const Key('teacher-secret-field')),
@@ -67,6 +74,10 @@ void main() {
       find.byKey(const Key('google-auth-button')),
     );
     expect(enabledGoogleButton.onPressed, isNotNull);
+    expect(
+      tester.widget<PrimaryButton>(find.byType(PrimaryButton)).onPressed,
+      isNotNull,
+    );
     expect(find.text('СЕНІҢ ФИЗИКА ЗЕРТХАНАҢ'), findsNothing);
   });
 

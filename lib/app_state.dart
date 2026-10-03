@@ -347,15 +347,61 @@ class AppState extends ChangeNotifier {
     }
     final db = FirebaseFirestore.instance;
     final classRef = db.collection('classes').doc(code);
+    await _deleteOwnedClass(db, classRef);
+    classes.removeWhere((item) => item.code == code);
+    notifyListeners();
+  }
+
+  Future<void> _deleteOwnedClass(
+    FirebaseFirestore db,
+    DocumentReference<Map<String, dynamic>> classRef,
+  ) async {
     final posts = await classRef.collection('posts').get();
     for (final post in posts.docs) {
       await _deleteCollection(db, post.reference.collection('comments'));
+      await _deleteCollection(db, post.reference.collection('submissions'));
       await post.reference.delete();
     }
     await _deleteCollection(db, classRef.collection('members'));
     await classRef.delete();
-    classes.removeWhere((item) => item.code == code);
-    notifyListeners();
+  }
+
+  /// Removes this user's classroom contributions before removing their profile.
+  /// Firebase Auth deletion is performed by the calling screen after this succeeds.
+  Future<void> deleteAccountData() async {
+    final current = profile;
+    if (current == null || current.uid.isEmpty) {
+      throw StateError('Аккаунт табылмады');
+    }
+    final db = FirebaseFirestore.instance;
+    final joined = await db
+        .collection('classes')
+        .where('memberIds', arrayContains: current.uid)
+        .get();
+    for (final item in joined.docs) {
+      if (item.data()['teacherUid'] == current.uid) {
+        await _deleteOwnedClass(db, item.reference);
+        continue;
+      }
+      final posts = await item.reference.collection('posts').get();
+      for (final post in posts.docs) {
+        final comments = await post.reference.collection('comments').get();
+        for (final comment in comments.docs) {
+          if (comment.data()['authorUid'] == current.uid) {
+            await comment.reference.delete();
+          }
+        }
+        await post.reference
+            .collection('submissions')
+            .doc(current.uid)
+            .delete();
+      }
+      await item.reference.collection('members').doc(current.uid).delete();
+      await item.reference.update({
+        'memberIds': FieldValue.arrayRemove([current.uid]),
+      });
+    }
+    await db.collection('users').doc(current.uid).delete();
   }
 
   Future<void> _deleteCollection(

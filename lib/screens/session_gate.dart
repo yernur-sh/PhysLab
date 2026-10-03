@@ -33,7 +33,13 @@ class _SessionGateState extends State<SessionGate> {
         .doc(user.uid)
         .get()
         .timeout(const Duration(seconds: 12));
-    if (!snapshot.exists) return _StartDestination.login;
+    if (!snapshot.exists) {
+      return user.providerData.any(
+            (provider) => provider.providerId == 'google.com',
+          )
+          ? _StartDestination.registration
+          : _StartDestination.login;
+    }
 
     final data = snapshot.data() ?? <String, dynamic>{};
     final providerIsGoogle = user.providerData.any(

@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../app_state.dart';
 import '../widgets/common.dart';
 import 'main_shell.dart';
+import 'complete_profile_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key, this.initialLogin = false});
@@ -197,9 +198,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   height: 56,
                   child: OutlinedButton.icon(
                     key: const Key('google-auth-button'),
-                    onPressed: loading || (!isLogin && !teacherCodeValid)
-                        ? null
-                        : _googleSignIn,
+                    onPressed: loading ? null : _googleSignIn,
                     icon: Image.asset(
                       'assets/branding/google_g.png',
                       key: const Key('google-brand-icon'),
@@ -323,7 +322,6 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Future<void> _googleSignIn() async {
-    if (!isLogin && !teacherCodeValid) return;
     setState(() => loading = true);
     try {
       UserCredential result;
@@ -369,6 +367,7 @@ class _AuthScreenState extends State<AuthScreen> {
           : (googleInfo?.photoURL ?? selectedPhoto);
       final doc = FirebaseFirestore.instance.collection('users').doc(user.uid);
       final existing = await doc.get();
+      if (!mounted) return;
       if (!existing.exists) {
         if (isLogin) {
           await FirebaseAuth.instance.signOut();
@@ -376,14 +375,20 @@ class _AuthScreenState extends State<AuthScreen> {
             'Бұл Google аккаунты тіркелмеген. Алдымен тіркеліңіз.',
           );
         }
-        await doc.set({
-          'name': googleName,
-          'email': user.email ?? googleInfo?.email ?? '',
-          'role': role.name,
-          'photoUrl': googlePhoto,
-          'isGoogleUser': true,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
+        await Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => CompleteProfileScreen(
+              user: user,
+              suggestedName: googleName,
+              photoUrl: googlePhoto,
+              initialRole: role,
+            ),
+          ),
+        );
+        if (mounted && !(await doc.get()).exists) {
+          await FirebaseAuth.instance.signOut();
+        }
+        return;
       } else if (!isLogin) {
         await FirebaseAuth.instance.signOut();
         throw StateError('Бұл Google аккаунты тіркелген. Кіруді таңдаңыз.');

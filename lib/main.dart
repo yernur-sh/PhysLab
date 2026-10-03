@@ -38,6 +38,7 @@ class _PhysLabAppState extends State<PhysLabApp> {
         theme: ThemeData(
           useMaterial3: true,
           fontFamily: 'Montserrat',
+          fontFamilyFallback: const ['NotoSansMath'],
           colorScheme: ColorScheme.fromSeed(
             seedColor: primary,
             brightness: Brightness.light,

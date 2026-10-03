@@ -18,10 +18,10 @@ class _FormulaBuilderGameState extends State<FormulaBuilderGame> {
   static const challenges = <_FormulaChallenge>[
     (
       name: 'Потенциалдық энергия',
-      left: 'Eₚ',
+      left: 'E_p',
       answer: ['m', 'g', 'h'],
       options: ['m', 'g', 'h', 'v', 't', 'F'],
-      explanation: 'Eₚ = mgh: масса × еркін түсу үдеуі × биіктік.',
+      explanation: 'E_p = mgh: масса × еркін түсу үдеуі × биіктік.',
     ),
     (
       name: 'Ньютонның екінші заңы',

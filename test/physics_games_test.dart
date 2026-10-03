@@ -1,10 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:physlab/physics_game_models.dart';
+import 'package:physlab/physics_data.dart';
 import 'package:physlab/screens/physics_games.dart';
 import 'package:physlab/screens/main_shell.dart';
 
 void main() {
+  test('lesson formulas avoid unsupported subscript letters', () {
+    final unsupported = RegExp(r'[ₐ-₟⁻ⁿ]');
+    for (final topic in physicsTopics) {
+      final texts = <String>[
+        topic.formula,
+        topic.explanation,
+        ...topic.keyIdeas,
+        topic.topicQuestion,
+        ...topic.topicSteps,
+        topic.topicAnswer,
+        ...topic.symbols,
+        ...topic.derivation,
+        topic.formulaQuestion,
+        ...topic.formulaSteps,
+        topic.formulaAnswer,
+      ];
+      for (final value in texts) {
+        expect(
+          unsupported.hasMatch(value),
+          isFalse,
+          reason: '${topic.title}: $value',
+        );
+      }
+    }
+  });
+
+  testWidgets('formula builder shows readable potential energy notation', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    await tester.pumpWidget(const MaterialApp(home: FormulaBuilderGame()));
+    expect(find.text('E_p = '), findsOneWidget);
+    expect(find.textContaining('ₚ'), findsNothing);
+  });
+
   test('projectile trajectory and hit test follow kinematics', () {
     expect(projectileRange(20, 45), closeTo(40.82, .02));
     expect(projectileHeightAt(20, 20, 45), closeTo(10.2, .02));

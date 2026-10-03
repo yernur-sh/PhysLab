@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import '../app_state.dart';
 import '../widgets/common.dart';
+import 'homework_submissions_screen.dart';
 
 class ClassroomScreen extends StatefulWidget {
   const ClassroomScreen({super.key, required this.physicsClass});
@@ -405,17 +406,6 @@ class _ClassPosts extends StatelessWidget {
                             ],
                           ),
                         ),
-                        if (isTeacher)
-                          _EditDeleteButtons(
-                            onEdit: () => _editPost(
-                              context,
-                              classRef,
-                              profile!,
-                              type,
-                              existing: doc,
-                            ),
-                            onDelete: () => _deletePost(context, doc.reference),
-                          ),
                       ],
                     ),
                   ),
@@ -444,8 +434,25 @@ class _ClassPosts extends StatelessWidget {
                           Text(
                             'Мерзімі: ${_date(due)}',
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: navy,
                               fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                        if (isTeacher) ...[
+                          const SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: _EditDeleteButtons(
+                              onEdit: () => _editPost(
+                                context,
+                                classRef,
+                                profile!,
+                                type,
+                                existing: doc,
+                              ),
+                              onDelete: () =>
+                                  _deletePost(context, doc.reference),
                             ),
                           ),
                         ],
@@ -593,25 +600,6 @@ class _ClassPostScreenState extends State<ClassPostScreen> {
                                   ),
                                 ),
                               ),
-                              if (isTeacher)
-                                _EditDeleteButtons(
-                                  onEdit: () => _editPost(
-                                    context,
-                                    widget.classRef,
-                                    widget.profile!,
-                                    data['type'] as String? ?? 'announcement',
-                                    existing: snapshot.data,
-                                  ),
-                                  onDelete: () async {
-                                    final deleted = await _deletePost(
-                                      context,
-                                      postRef,
-                                    );
-                                    if (deleted && context.mounted) {
-                                      Navigator.of(context).pop();
-                                    }
-                                  },
-                                ),
                             ],
                           ),
                           const SizedBox(height: 9),
@@ -624,6 +612,55 @@ class _ClassPostScreenState extends State<ClassPostScreen> {
                             data['authorName'] as String? ?? '',
                             style: const TextStyle(color: muted),
                           ),
+                          if (data['type'] == 'homework' &&
+                              widget.profile != null) ...[
+                            const SizedBox(height: 16),
+                            FilledButton.icon(
+                              onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => HomeworkSubmissionsScreen(
+                                    postRef: postRef,
+                                    profile: widget.profile!,
+                                    isTeacher: isTeacher,
+                                  ),
+                                ),
+                              ),
+                              icon: Icon(
+                                isTeacher
+                                    ? Icons.fact_check_outlined
+                                    : Icons.upload_file_rounded,
+                              ),
+                              label: Text(
+                                isTeacher
+                                    ? 'Оқушы жауаптары'
+                                    : 'Шешімімді жіберу',
+                              ),
+                            ),
+                          ],
+                          if (isTeacher) ...[
+                            const SizedBox(height: 12),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: _EditDeleteButtons(
+                                onEdit: () => _editPost(
+                                  context,
+                                  widget.classRef,
+                                  widget.profile!,
+                                  data['type'] as String? ?? 'announcement',
+                                  existing: snapshot.data,
+                                ),
+                                onDelete: () async {
+                                  final deleted = await _deletePost(
+                                    context,
+                                    postRef,
+                                  );
+                                  if (deleted && context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -702,28 +739,32 @@ class _ClassPostScreenState extends State<ClassPostScreen> {
                                                 ),
                                               ),
                                             ),
-                                            if (own || isTeacher)
-                                              _EditDeleteButtons(
-                                                onEdit: own
-                                                    ? () => _editComment(
-                                                        context,
-                                                        doc.reference,
-                                                        item['body']
-                                                                as String? ??
-                                                            '',
-                                                      )
-                                                    : null,
-                                                onDelete: () => _deleteComment(
-                                                  context,
-                                                  doc.reference,
-                                                ),
-                                              ),
                                           ],
                                         ),
                                         Text(
                                           item['body'] as String? ?? '',
                                           style: const TextStyle(height: 1.4),
                                         ),
+                                        if (own || isTeacher) ...[
+                                          const SizedBox(height: 8),
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: _EditDeleteButtons(
+                                              onEdit: own
+                                                  ? () => _editComment(
+                                                      context,
+                                                      doc.reference,
+                                                      item['body'] as String? ??
+                                                          '',
+                                                    )
+                                                  : null,
+                                              onDelete: () => _deleteComment(
+                                                context,
+                                                doc.reference,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ],
                                     ),
                                   ),
@@ -986,6 +1027,18 @@ Future<bool> _deletePost(
       }
       await batch.commit();
     }
+    while (true) {
+      final submissions = await postRef
+          .collection('submissions')
+          .limit(400)
+          .get();
+      if (submissions.docs.isEmpty) break;
+      final batch = FirebaseFirestore.instance.batch();
+      for (final submission in submissions.docs) {
+        batch.delete(submission.reference);
+      }
+      await batch.commit();
+    }
     await postRef.delete();
     if (context.mounted) showMessage(context, 'Жарияланым өшірілді');
     return true;
@@ -1084,29 +1137,43 @@ class _EditDeleteButtons extends StatelessWidget {
   final VoidCallback onDelete;
 
   @override
-  Widget build(BuildContext context) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      if (onEdit != null)
-        IconButton(
-          tooltip: 'Өзгерту',
-          onPressed: onEdit,
-          icon: const Icon(Icons.edit_outlined),
-          iconSize: 18,
-          color: primary,
-          visualDensity: VisualDensity.compact,
-          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-        ),
-      IconButton(
-        tooltip: 'Өшіру',
-        onPressed: onDelete,
-        icon: const Icon(Icons.delete_outline_rounded),
-        iconSize: 18,
-        color: coral,
-        visualDensity: VisualDensity.compact,
-        constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      color: Colors.white.withValues(alpha: .74),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: const Color(0xFFDDE4F5)),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (onEdit != null)
+            IconButton(
+              tooltip: 'Өзгерту',
+              onPressed: onEdit,
+              icon: const Icon(Icons.edit_rounded),
+              iconSize: 16,
+              color: primary,
+              padding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
+              constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
+            ),
+          if (onEdit != null)
+            const SizedBox(height: 17, child: VerticalDivider(width: 1)),
+          IconButton(
+            tooltip: 'Өшіру',
+            onPressed: onDelete,
+            icon: const Icon(Icons.delete_outline_rounded),
+            iconSize: 16,
+            color: coral,
+            padding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
+          ),
+        ],
       ),
-    ],
+    ),
   );
 }
 

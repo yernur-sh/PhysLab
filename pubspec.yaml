@@ -76,6 +76,9 @@ flutter:
           weight: 600
         - asset: assets/fonts/Montserrat-Bold.ttf
           weight: 700
+    - family: NotoSansMath
+      fonts:
+        - asset: assets/fonts/NotoSansMath-Regular.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
